@@ -1,0 +1,6 @@
+{
+  "name": "SOLIMAN - MEGA SYSTEM - Apple & Repair Hub",
+  "description": "متجر متكامل وأحدث أجهزة أبل، أجهزة مجددة ومستعملة مع ضمان، مركز صيانة متخصص وحاسبة استبدال الأجهزة.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
