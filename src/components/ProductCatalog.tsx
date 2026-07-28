@@ -87,17 +87,20 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
     if (currency === 'USD') {
       return `$${Math.round(priceEgp / 48)}`;
     }
-    return `${priceEgp.toLocaleString()} ج.م`;
+    return isAr ? `${priceEgp.toLocaleString()} ج.م` : `EGP ${priceEgp.toLocaleString()}`;
   };
 
   const getMonthlyInstallment = (priceEgp: number) => {
     // 12 months estimate with ValU
     const monthly = Math.round(priceEgp / 12);
-    return currency === 'USD' ? `$${Math.round(monthly / 48)}/mo` : `${monthly.toLocaleString()} ج.م/شهر`;
+    if (currency === 'USD') {
+      return `$${Math.round(monthly / 48)}/mo`;
+    }
+    return isAr ? `${monthly.toLocaleString()} ج.م/شهر` : `EGP ${monthly.toLocaleString()}/mo`;
   };
 
   return (
-    <section className="py-12 px-4 bg-slate-100/60 font-sans min-h-[600px]">
+    <section id="catalog-section" className="py-12 px-4 bg-slate-100/60 font-sans min-h-[600px]">
       <div className="max-w-7xl mx-auto">
         {/* Top Control Header */}
         <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200/80 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">

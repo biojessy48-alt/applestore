@@ -10,12 +10,13 @@ import { CartDrawer } from './components/CartDrawer';
 import { AiAdvisorModal } from './components/AiAdvisorModal';
 import { Footer } from './components/Footer';
 import { AdminPanel, OrderItem } from './components/AdminPanel';
+import { AdminAuthModal } from './components/AdminAuthModal';
 
 import { 
   Product, RepairService, RepairTicket, CategoryId, Language, Currency, CartItem, ProductColor, StorageOption,
-  TradeInModel, TradeInRequest, HeroSlide
+  TradeInModel, TradeInRequest, HeroSlide, StoreBranch, StoreCategory
 } from './types';
-import { mockProducts, mockRepairServices } from './data/mockData';
+import { mockProducts, mockRepairServices, mockStoreBranches, mockStoreCategories } from './data/mockData';
 
 const initialTickets: RepairTicket[] = [
   {
@@ -122,6 +123,28 @@ export default function App() {
 
   // Admin Dashboard State
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isAdminAuthOpen, setIsAdminAuthOpen] = useState(false);
+
+  // Check URL query string or keyboard shortcut for admin access
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('admin') === 'true' || urlParams.get('admin') === '1') {
+        setIsAdminAuthOpen(true);
+      }
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+Shift+A shortcut to open admin login
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'a') {
+        e.preventDefault();
+        setIsAdminAuthOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Editable Catalog State
   const [products, setProducts] = useState<Product[]>(mockProducts);
@@ -135,6 +158,24 @@ export default function App() {
 
   // Hero Banner Slides State
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
+
+  // Store Branches State
+  const [storeBranches, setStoreBranches] = useState<StoreBranch[]>(mockStoreBranches);
+
+  // Store Categories State
+  const [storeCategories, setStoreCategories] = useState<StoreCategory[]>(mockStoreCategories);
+
+  const handleAddStoreCategory = (newCat: StoreCategory) => {
+    setStoreCategories((prev) => [newCat, ...prev]);
+  };
+
+  const handleUpdateStoreCategory = (updatedCat: StoreCategory) => {
+    setStoreCategories((prev) => prev.map((c) => (c.id === updatedCat.id ? updatedCat : c)));
+  };
+
+  const handleDeleteStoreCategory = (catId: string) => {
+    setStoreCategories((prev) => prev.filter((c) => c.id !== catId));
+  };
 
   // Settings & Store Contacts
   const [announcementText, setAnnouncementText] = useState('🚚 شحن آمن وسريع لجميع المحافظات مع ضمان استبدال 14 يومًا');
@@ -180,6 +221,10 @@ export default function App() {
 
   const handleAddRepairService = (newService: RepairService) => {
     setRepairServices((prev) => [...prev, newService]);
+  };
+
+  const handleDeleteRepairService = (id: string) => {
+    setRepairServices((prev) => prev.filter((s) => s.id !== id));
   };
 
   // Repair Tickets CRUD
@@ -234,6 +279,19 @@ export default function App() {
 
   const handleDeleteHeroSlide = (id: number) => {
     setHeroSlides((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  // Store Branches CRUD
+  const handleAddStoreBranch = (branch: StoreBranch) => {
+    setStoreBranches((prev) => [...prev, branch]);
+  };
+
+  const handleUpdateStoreBranch = (branch: StoreBranch) => {
+    setStoreBranches((prev) => prev.map((b) => (b.id === branch.id ? branch : b)));
+  };
+
+  const handleDeleteStoreBranch = (id: string) => {
+    setStoreBranches((prev) => prev.filter((b) => b.id !== id));
   };
 
   // Orders CRUD
@@ -334,6 +392,17 @@ export default function App() {
     }
   };
 
+  const handleSelectCategory = (cat: CategoryId) => {
+    setSelectedCategory(cat);
+    if (cat === 'maintenance') {
+      scrollToSection('maintenance-hub');
+    } else if (cat === 'used') {
+      scrollToSection('trade-in-section');
+    } else {
+      scrollToSection('catalog-section');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 font-sans selection:bg-emerald-600 selection:text-white">
       {/* If Admin Dashboard View is Active */}
@@ -348,6 +417,7 @@ export default function App() {
           repairServices={repairServices}
           onUpdateRepairService={handleUpdateRepairService}
           onAddRepairService={handleAddRepairService}
+          onDeleteRepairService={handleDeleteRepairService}
           repairTickets={repairTickets}
           onAddRepairTicket={handleAddRepairTicket}
           onUpdateRepairTicketStatus={handleUpdateRepairTicketStatus}
@@ -362,6 +432,14 @@ export default function App() {
           heroSlides={heroSlides}
           onAddHeroSlide={handleAddHeroSlide}
           onDeleteHeroSlide={handleDeleteHeroSlide}
+          storeBranches={storeBranches}
+          onAddStoreBranch={handleAddStoreBranch}
+          onUpdateStoreBranch={handleUpdateStoreBranch}
+          onDeleteStoreBranch={handleDeleteStoreBranch}
+          storeCategories={storeCategories}
+          onAddStoreCategory={handleAddStoreCategory}
+          onUpdateStoreCategory={handleUpdateStoreCategory}
+          onDeleteStoreCategory={handleDeleteStoreCategory}
           announcementText={announcementText}
           setAnnouncementText={setAnnouncementText}
           storePhone={storePhone}
@@ -379,7 +457,7 @@ export default function App() {
             currency={currency}
             setCurrency={setCurrency}
             selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
+            setSelectedCategory={handleSelectCategory}
             cartItems={cartItems}
             setIsCartOpen={setIsCartOpen}
             wishlistIds={wishlistIds}
@@ -390,8 +468,9 @@ export default function App() {
             onOpenRepairTracker={() => scrollToSection('maintenance-hub')}
             onOpenTradeIn={() => scrollToSection('trade-in-section')}
             onOpenAiAdvisor={() => setIsAiAdvisorOpen(true)}
-            onOpenAdminPanel={() => setIsAdminOpen(true)}
+            onOpenAdminPanel={() => setIsAdminAuthOpen(true)}
             announcementText={announcementText}
+            storeCategories={storeCategories}
           />
 
           {/* Main Content Body */}
@@ -401,7 +480,7 @@ export default function App() {
               language={language}
               currency={currency}
               slides={heroSlides}
-              onSelectCategory={(cat) => setSelectedCategory(cat)}
+              onSelectCategory={handleSelectCategory}
               onOpenTradeIn={() => scrollToSection('trade-in-section')}
               onOpenRepair={() => scrollToSection('maintenance-hub')}
             />
@@ -410,21 +489,15 @@ export default function App() {
             <CategoryGrid
               language={language}
               selectedCategory={selectedCategory}
-              onSelectCategory={(cat) => {
-                setSelectedCategory(cat);
-                if (cat === 'maintenance') {
-                  scrollToSection('maintenance-hub');
-                } else if (cat === 'used') {
-                  scrollToSection('trade-in-section');
-                }
-              }}
+              categories={storeCategories}
+              onSelectCategory={handleSelectCategory}
             />
 
             {/* Filterable Product Catalog */}
             <ProductCatalog
               products={products}
               selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
+              setSelectedCategory={handleSelectCategory}
               language={language}
               currency={currency}
               searchQuery={searchQuery}
@@ -438,6 +511,11 @@ export default function App() {
             <MaintenanceCenter
               language={language}
               currency={currency}
+              branches={storeBranches}
+              repairServices={repairServices}
+              repairTickets={repairTickets}
+              onAddRepairTicket={handleAddRepairTicket}
+              storeWhatsApp={storeWhatsApp}
               onOpenAiAdvisor={() => setIsAiAdvisorOpen(true)}
             />
 
@@ -447,7 +525,7 @@ export default function App() {
               currency={currency}
               tradeInModels={tradeInModels}
               onSubmitTradeInRequest={handleAddTradeInRequest}
-              onOpenCatalog={() => setSelectedCategory('all')}
+              onOpenCatalog={() => handleSelectCategory('all')}
             />
           </main>
 
@@ -455,8 +533,11 @@ export default function App() {
           <Footer
             language={language}
             currency={currency}
+            branches={storeBranches}
             onOpenTradeIn={() => scrollToSection('trade-in-section')}
             onOpenRepair={() => scrollToSection('maintenance-hub')}
+            onOpenAdminAuth={() => setIsAdminAuthOpen(true)}
+            onSelectCategory={handleSelectCategory}
           />
 
           {/* Product Detail Modal */}
@@ -486,6 +567,17 @@ export default function App() {
           <AiAdvisorModal
             isOpen={isAiAdvisorOpen}
             onClose={() => setIsAiAdvisorOpen(false)}
+            language={language}
+          />
+
+          {/* Admin Authentication Modal */}
+          <AdminAuthModal
+            isOpen={isAdminAuthOpen}
+            onClose={() => setIsAdminAuthOpen(false)}
+            onAuthenticated={() => {
+              setIsAdminAuthOpen(false);
+              setIsAdminOpen(true);
+            }}
             language={language}
           />
         </>

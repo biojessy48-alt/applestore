@@ -1,16 +1,19 @@
 export type Language = 'ar' | 'en';
 export type Currency = 'EGP' | 'USD';
 
-export type CategoryId = 
-  | 'all'
-  | 'iphones' 
-  | 'ipads' 
-  | 'macs' 
-  | 'watches' 
-  | 'audio' 
-  | 'accessories' 
-  | 'used' 
-  | 'maintenance';
+export type CategoryId = string;
+
+export interface StoreCategory {
+  id: string;
+  nameAr: string;
+  nameEn: string;
+  descriptionAr?: string;
+  descriptionEn?: string;
+  badgeAr?: string;
+  badgeEn?: string;
+  bgImage?: string;
+  iconName?: string;
+}
 
 export type ProductCondition = 'New' | 'Like New (99%)' | 'Grade A+ (95%)' | 'Refurbished';
 

@@ -64,7 +64,7 @@ export const TradeInCalculator: React.FC<TradeInCalculatorProps> = ({
   const estimatedValEgp = calculateEstimateEgp();
 
   const formatPrice = (egp: number) => {
-    return currency === 'USD' ? `$${Math.round(egp / 48)}` : `${egp.toLocaleString()} ج.م`;
+    return currency === 'USD' ? `$${Math.round(egp / 48)}` : (isAr ? `${egp.toLocaleString()} ج.م` : `EGP ${egp.toLocaleString()}`);
   };
 
   const handleBookTradeIn = (e: React.FormEvent) => {

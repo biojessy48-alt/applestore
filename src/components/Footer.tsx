@@ -3,21 +3,27 @@ import {
   MapPin, Phone, MessageSquare, Clock, ShieldCheck, CreditCard, 
   RefreshCw, Wrench, Heart, Send, Sparkles 
 } from 'lucide-react';
-import { Language, Currency } from '../types';
+import { Language, Currency, StoreBranch } from '../types';
 import { mockStoreBranches } from '../data/mockData';
 
 interface FooterProps {
   language: Language;
   currency: Currency;
+  branches?: StoreBranch[];
   onOpenTradeIn: () => void;
   onOpenRepair: () => void;
+  onOpenAdminAuth?: () => void;
+  onSelectCategory?: (cat: any) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   language,
   currency,
+  branches,
   onOpenTradeIn,
-  onOpenRepair
+  onOpenRepair,
+  onOpenAdminAuth,
+  onSelectCategory
 }) => {
   const isAr = language === 'ar';
 
@@ -71,26 +77,34 @@ export const Footer: React.FC<FooterProps> = ({
             </h4>
             <ul className="space-y-2 text-xs text-slate-300 font-semibold">
               <li>
-                <button onClick={onOpenRepair} className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
-                  <Wrench className="w-3.5 h-3.5 text-amber-400" />
+                <button onClick={onOpenRepair} className="hover:text-amber-300 transition-colors flex items-center gap-1.5 text-right w-full">
+                  <Wrench className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   <span>{isAr ? 'حجز وتتبع كارت الصيانة الفورية' : 'Book Express Repair'}</span>
                 </button>
               </li>
               <li>
-                <button onClick={onOpenTradeIn} className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
-                  <RefreshCw className="w-3.5 h-3.5 text-emerald-400" />
+                <button onClick={onOpenTradeIn} className="hover:text-amber-300 transition-colors flex items-center gap-1.5 text-right w-full">
+                  <RefreshCw className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   <span>{isAr ? 'حاسبة تقييم وبدل جهازك القديم' : 'Trade-In Calculator'}</span>
                 </button>
               </li>
               <li>
-                <a href="#maintenance-hub" className="hover:text-amber-300 transition-colors">
-                  {isAr ? 'قسم الأجهزة المستعملة زيرو (بطارية 95%+)' : 'Pre-Owned Devices 99%'}
-                </a>
+                <button 
+                  onClick={() => onSelectCategory && onSelectCategory('used')} 
+                  className="hover:text-amber-300 transition-colors flex items-center gap-1.5 text-right w-full"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>{isAr ? 'قسم الأجهزة المستعملة زيرو (بطارية 95%+)' : 'Pre-Owned Devices 99%'}</span>
+                </button>
               </li>
               <li>
-                <a href="#" className="hover:text-amber-300 transition-colors">
-                  {isAr ? 'خطط وبرامج التقسيط الفوري (ValU)' : 'ValU Installment Plans'}
-                </a>
+                <button 
+                  onClick={() => onSelectCategory && onSelectCategory('all')} 
+                  className="hover:text-amber-300 transition-colors flex items-center gap-1.5 text-right w-full"
+                >
+                  <CreditCard className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>{isAr ? 'خطط وبرامج التقسيط الفوري (ValU)' : 'ValU Installment Plans'}</span>
+                </button>
               </li>
             </ul>
           </div>
@@ -101,7 +115,7 @@ export const Footer: React.FC<FooterProps> = ({
               {isAr ? 'فروعنا وجمهورية الصيانة' : 'Store Branches'}
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              {mockStoreBranches.map((branch) => (
+              {(branches && branches.length > 0 ? branches : mockStoreBranches).map((branch) => (
                 <div key={branch.id} className="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
                   <p className="font-extrabold text-amber-300 flex items-center gap-1">
                     <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
@@ -126,9 +140,21 @@ export const Footer: React.FC<FooterProps> = ({
             ))}
           </div>
 
-          <p className="text-[11px] text-slate-500">
-            © {new Date().getFullYear()} SOLIMAN - MEGA SYSTEM. {isAr ? 'جميع الحقوق محفوظة - متجر ومركز صيانة أبل المعتمد.' : 'All rights reserved.'}
-          </p>
+          <div className="flex items-center gap-3 text-[11px] text-slate-500">
+            <span>
+              © {new Date().getFullYear()} SOLIMAN - MEGA SYSTEM. {isAr ? 'جميع الحقوق محفوظة - متجر ومركز صيانة أبل المعتمد.' : 'All rights reserved.'}
+            </span>
+            {onOpenAdminAuth && (
+              <button 
+                onClick={onOpenAdminAuth}
+                className="hover:text-amber-400 text-slate-700 transition-colors flex items-center gap-1 opacity-40 hover:opacity-100"
+                title={isAr ? 'دخول طاقم الإدارة' : 'Staff Portal'}
+              >
+                <ShieldCheck className="w-3 h-3" />
+                <span className="text-[10px]">{isAr ? 'الإدارة' : 'Staff'}</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </footer>

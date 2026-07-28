@@ -1,4 +1,95 @@
-import { Product, RepairService, StoreBranch } from '../types';
+import { Product, RepairService, StoreBranch, StoreCategory } from '../types';
+
+export const mockStoreCategories: StoreCategory[] = [
+  {
+    id: 'iphones',
+    nameAr: 'أجهزة آيفون',
+    nameEn: 'iPhones',
+    descriptionAr: '16 Pro Max, 16, 15 Pro, 14 وباقي الفئات',
+    descriptionEn: 'Latest flagship models',
+    badgeAr: 'جديد ومستعمل',
+    badgeEn: 'New & Used',
+    bgImage: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?q=80&w=400&auto=format&fit=crop',
+    iconName: 'Smartphone'
+  },
+  {
+    id: 'macs',
+    nameAr: 'أجهزة ماك بوك',
+    nameEn: 'MacBook & Mac',
+    descriptionAr: 'M3 Pro, M3 Max, M2 Air أجهزة احترافية',
+    descriptionEn: 'Ultimate performance laptops',
+    badgeAr: 'ضمان سنة',
+    badgeEn: '1 Year Warranty',
+    bgImage: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=400&auto=format&fit=crop',
+    iconName: 'Laptop'
+  },
+  {
+    id: 'ipads',
+    nameAr: 'أجهزة آيباد',
+    nameEn: 'iPads',
+    descriptionAr: 'iPad Pro M4, Air M2, Mini للإنتاجية والتصميم',
+    descriptionEn: 'Ultra Retina OLED displays',
+    badgeAr: 'أنحف آيباد',
+    badgeEn: 'Thinnest Ever',
+    bgImage: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=400&auto=format&fit=crop',
+    iconName: 'Tablet'
+  },
+  {
+    id: 'watches',
+    nameAr: 'ساعات أبل',
+    nameEn: 'Apple Watch',
+    descriptionAr: 'Ultra 2, Series 10, SE تتبع اللياقة والصحة',
+    descriptionEn: 'Advanced health & GPS tracking',
+    badgeAr: 'تيتانيوم 49مم',
+    badgeEn: 'Titanium 49mm',
+    bgImage: 'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?q=80&w=400&auto=format&fit=crop',
+    iconName: 'Watch'
+  },
+  {
+    id: 'audio',
+    nameAr: 'إيربودز وصوتيات',
+    nameEn: 'AirPods & Audio',
+    descriptionAr: 'AirPods Max, Pro 2 عزل ضوضاء خيالي',
+    descriptionEn: 'Active Noise Cancellation',
+    badgeAr: 'عزل صوتي خيالي',
+    badgeEn: 'ANC Studio',
+    bgImage: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?q=80&w=400&auto=format&fit=crop',
+    iconName: 'Headphones'
+  },
+  {
+    id: 'accessories',
+    nameAr: 'إكسسوارات أصلية',
+    nameEn: 'Original Accessories',
+    descriptionAr: 'Anker, MagSafe, Spigen شواحن وجرابات',
+    descriptionEn: 'Fast chargers & protection cases',
+    badgeAr: 'أوريجينال 100%',
+    badgeEn: '100% Original',
+    bgImage: 'https://images.unsplash.com/photo-1609592424109-dd9892f1b177?q=80&w=400&auto=format&fit=crop',
+    iconName: 'Cable'
+  },
+  {
+    id: 'used',
+    nameAr: 'المستعمل والمجدد (زيرو)',
+    nameEn: 'Used & Open Box',
+    descriptionAr: 'أجهزة مستعملة كأنها جديدة كشف 50 نقطة كفاءة',
+    descriptionEn: 'Tested like-new certified pre-owned',
+    badgeAr: 'زيرو 99%',
+    badgeEn: '99% Mint',
+    bgImage: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400&auto=format&fit=crop',
+    iconName: 'Sparkles'
+  },
+  {
+    id: 'maintenance',
+    nameAr: 'مركز الصيانة المعتمد',
+    nameEn: 'Repair Services',
+    descriptionAr: 'تغيير شاشات وبطاريات أصلية مع ضمان معتمد',
+    descriptionEn: 'Express repairs with genuine parts',
+    badgeAr: 'ضمان معتمد',
+    badgeEn: 'Certified Repair',
+    bgImage: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=400&auto=format&fit=crop',
+    iconName: 'Wrench'
+  }
+];
 
 export const mockProducts: Product[] = [
   {

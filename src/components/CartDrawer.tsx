@@ -56,7 +56,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const totalEgp = rawSubtotalEgp - discountEgp + (cartItems.length > 0 ? shippingCostEgp : 0);
 
   const formatPrice = (priceEgp: number) => {
-    return currency === 'USD' ? `$${Math.round(priceEgp / 48)}` : `${priceEgp.toLocaleString()} ج.م`;
+    return currency === 'USD' ? `$${Math.round(priceEgp / 48)}` : (isAr ? `${priceEgp.toLocaleString()} ج.م` : `EGP ${priceEgp.toLocaleString()}`);
   };
 
   const handleApplyCoupon = () => {
@@ -287,6 +287,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <p className="text-xs text-slate-500">
                 {isAr ? 'تصفح أحدث أجهزة أبل وإكسسواراتها وأضف خياراتك' : 'Explore products and add items to your cart'}
               </p>
+              <button
+                onClick={onClose}
+                className="mt-3 px-6 py-2.5 bg-emerald-900 hover:bg-emerald-950 text-amber-300 font-bold text-xs rounded-xl shadow-md transition-all inline-block"
+              >
+                {isAr ? 'تصفح أحدث أجهزة الكتالوج' : 'Browse Catalog'}
+              </button>
             </div>
           ) : (
             <div className="space-y-3">

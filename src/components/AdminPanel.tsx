@@ -3,11 +3,11 @@ import {
   LayoutDashboard, ShoppingBag, Wrench, RefreshCw, Settings, Plus, 
   Trash2, Edit, Check, Search, AlertCircle, ArrowLeft, ShieldCheck, 
   DollarSign, Package, Users, Truck, Clock, Sparkles, X, ChevronDown, 
-  BarChart3, Store, Eye, Tag, Phone, MapPin, Save, Image as ImageIcon, Send
+  BarChart3, Store, Eye, Tag, Phone, MapPin, Save, Image as ImageIcon, Send, Grid
 } from 'lucide-react';
 import { 
   Product, RepairService, RepairTicket, Language, Currency, CategoryId, ProductCondition,
-  TradeInModel, TradeInRequest, HeroSlide
+  TradeInModel, TradeInRequest, HeroSlide, StoreBranch, StoreCategory
 } from '../types';
 
 export interface OrderItem {
@@ -37,6 +37,7 @@ interface AdminPanelProps {
   repairServices: RepairService[];
   onUpdateRepairService: (service: RepairService) => void;
   onAddRepairService: (service: RepairService) => void;
+  onDeleteRepairService?: (id: string) => void;
   // Repair Tickets Tracking CRUD
   repairTickets: RepairTicket[];
   onAddRepairTicket: (ticket: RepairTicket) => void;
@@ -55,6 +56,16 @@ interface AdminPanelProps {
   heroSlides: HeroSlide[];
   onAddHeroSlide: (slide: HeroSlide) => void;
   onDeleteHeroSlide: (id: number) => void;
+  // Store Branches Management
+  storeBranches: StoreBranch[];
+  onAddStoreBranch: (branch: StoreBranch) => void;
+  onUpdateStoreBranch: (branch: StoreBranch) => void;
+  onDeleteStoreBranch: (id: string) => void;
+  // Store Categories Management
+  storeCategories: StoreCategory[];
+  onAddStoreCategory: (category: StoreCategory) => void;
+  onUpdateStoreCategory: (category: StoreCategory) => void;
+  onDeleteStoreCategory: (id: string) => void;
   // General Store Settings
   announcementText: string;
   setAnnouncementText: (text: string) => void;
@@ -75,6 +86,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   repairServices,
   onUpdateRepairService,
   onAddRepairService,
+  onDeleteRepairService,
   repairTickets,
   onAddRepairTicket,
   onUpdateRepairTicketStatus,
@@ -89,6 +101,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   heroSlides,
   onAddHeroSlide,
   onDeleteHeroSlide,
+  storeBranches,
+  onAddStoreBranch,
+  onUpdateStoreBranch,
+  onDeleteStoreBranch,
+  storeCategories,
+  onAddStoreCategory,
+  onUpdateStoreCategory,
+  onDeleteStoreCategory,
   announcementText,
   setAnnouncementText,
   storePhone,
@@ -100,8 +120,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const isAr = language === 'ar';
 
   const [activeTab, setActiveTab] = useState<
-    'analytics' | 'trade-in' | 'products' | 'orders' | 'repairs' | 'repair-services' | 'hero' | 'settings'
-  >('trade-in');
+    'analytics' | 'categories' | 'trade-in' | 'products' | 'orders' | 'repairs' | 'repair-services' | 'hero' | 'branches' | 'settings'
+  >('categories');
 
   // Search & Filter state for products
   const [productSearch, setProductSearch] = useState('');
@@ -132,9 +152,77 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [tIssueDesc, setTIssueDesc] = useState('');
   const [tEstimatedCost, setTEstimatedCost] = useState<number>(4500);
 
-  // Edit Service Price Modal
+  // Edit Service Price & Full Repair Service Modal
+  const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
   const [editingService, setEditingService] = useState<RepairService | null>(null);
-  const [sPriceEgp, setSPriceEgp] = useState<number>(0);
+  const [rsDeviceType, setRsDeviceType] = useState<'iphone' | 'ipad' | 'mac' | 'watch'>('iphone');
+  const [rsModelName, setRsModelName] = useState('');
+  const [rsIssueNameAr, setRsIssueNameAr] = useState('');
+  const [rsIssueNameEn, setRsIssueNameEn] = useState('');
+  const [rsPriceEgp, setRsPriceEgp] = useState<number>(2500);
+  const [rsTimeMinutes, setRsTimeMinutes] = useState<number>(45);
+  const [rsWarrantyMonths, setRsWarrantyMonths] = useState<number>(6);
+  const [rsDescriptionAr, setRsDescriptionAr] = useState('');
+  const [rsFilterDeviceType, setRsFilterDeviceType] = useState<string>('all');
+  const [rsSearchQuery, setRsSearchQuery] = useState<string>('');
+
+  const openServiceForm = (serviceToEdit?: RepairService) => {
+    if (serviceToEdit) {
+      setEditingService(serviceToEdit);
+      setRsDeviceType(serviceToEdit.deviceType);
+      setRsModelName(serviceToEdit.modelName);
+      setRsIssueNameAr(serviceToEdit.issueNameAr);
+      setRsIssueNameEn(serviceToEdit.issueName || serviceToEdit.issueNameAr);
+      setRsPriceEgp(serviceToEdit.estimatedPriceEgp);
+      setRsTimeMinutes(serviceToEdit.estimatedTimeMinutes || 45);
+      setRsWarrantyMonths(serviceToEdit.warrantyMonths || 6);
+      setRsDescriptionAr(serviceToEdit.descriptionAr || '');
+    } else {
+      setEditingService(null);
+      setRsDeviceType('iphone');
+      setRsModelName('');
+      setRsIssueNameAr('');
+      setRsIssueNameEn('');
+      setRsPriceEgp(2500);
+      setRsTimeMinutes(45);
+      setRsWarrantyMonths(6);
+      setRsDescriptionAr('');
+    }
+    setIsServiceModalOpen(true);
+  };
+
+  const handleSaveRepairService = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!rsModelName.trim() || !rsIssueNameAr.trim()) return;
+
+    if (editingService) {
+      onUpdateRepairService({
+        ...editingService,
+        deviceType: rsDeviceType,
+        modelName: rsModelName.trim(),
+        issueNameAr: rsIssueNameAr.trim(),
+        issueName: rsIssueNameEn.trim() || rsIssueNameAr.trim(),
+        estimatedPriceEgp: Number(rsPriceEgp),
+        estimatedTimeMinutes: Number(rsTimeMinutes),
+        warrantyMonths: Number(rsWarrantyMonths),
+        descriptionAr: rsDescriptionAr.trim() || `خدمة ${rsIssueNameAr} بقطع غيار أصلية ضمان ${rsWarrantyMonths} أشهر.`
+      });
+    } else {
+      const newService: RepairService = {
+        id: `rep-${Date.now()}`,
+        deviceType: rsDeviceType,
+        modelName: rsModelName.trim(),
+        issueNameAr: rsIssueNameAr.trim(),
+        issueName: rsIssueNameEn.trim() || rsIssueNameAr.trim(),
+        estimatedPriceEgp: Number(rsPriceEgp),
+        estimatedTimeMinutes: Number(rsTimeMinutes),
+        warrantyMonths: Number(rsWarrantyMonths),
+        descriptionAr: rsDescriptionAr.trim() || `خدمة ${rsIssueNameAr} بقطع غيار أصلية ضمان ${rsWarrantyMonths} أشهر.`
+      };
+      onAddRepairService(newService);
+    }
+    setIsServiceModalOpen(false);
+  };
 
   // TradeIn Model Modal
   const [isTradeInModelModalOpen, setIsTradeInModelModalOpen] = useState(false);
@@ -151,6 +239,148 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const [hsBadgeAr, setHsBadgeAr] = useState('عرض جديد حصري');
   const [hsCtaAr, setHsCtaAr] = useState('تسوق الآن');
   const [hsImageUrl, setHsImageUrl] = useState('');
+
+  // Branch Modal State
+  const [isBranchModalOpen, setIsBranchModalOpen] = useState(false);
+  const [editingBranch, setEditingBranch] = useState<StoreBranch | null>(null);
+  const [bNameAr, setBNameAr] = useState('');
+  const [bNameEn, setBNameEn] = useState('');
+  const [bCityAr, setBCityAr] = useState('');
+  const [bCityEn, setBCityEn] = useState('');
+  const [bAddressAr, setBAddressAr] = useState('');
+  const [bAddressEn, setBAddressEn] = useState('');
+  const [bPhone, setBPhone] = useState('');
+  const [bWhatsapp, setBWhatsapp] = useState('');
+  const [bHoursAr, setBHoursAr] = useState('');
+  const [bHoursEn, setBHoursEn] = useState('');
+
+  const openBranchForm = (branchToEdit?: StoreBranch) => {
+    if (branchToEdit) {
+      setEditingBranch(branchToEdit);
+      setBNameAr(branchToEdit.nameAr);
+      setBNameEn(branchToEdit.name);
+      setBCityAr(branchToEdit.cityAr);
+      setBCityEn(branchToEdit.city);
+      setBAddressAr(branchToEdit.addressAr);
+      setBAddressEn(branchToEdit.address);
+      setBPhone(branchToEdit.phone);
+      setBWhatsapp(branchToEdit.whatsapp);
+      setBHoursAr(branchToEdit.hoursAr);
+      setBHoursEn(branchToEdit.hours);
+    } else {
+      setEditingBranch(null);
+      setBNameAr('');
+      setBNameEn('');
+      setBCityAr('القاهرة');
+      setBCityEn('Cairo');
+      setBAddressAr('');
+      setBAddressEn('');
+      setBPhone('01012345678');
+      setBWhatsapp('201012345678');
+      setBHoursAr('يومياً من 11:00 صباحاً حتى 11:00 مساءً');
+      setBHoursEn('11:00 AM - 11:00 PM Daily');
+    }
+    setIsBranchModalOpen(true);
+  };
+
+  const handleSaveBranch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bNameAr || !bAddressAr || !bPhone) return;
+
+    if (editingBranch) {
+      onUpdateStoreBranch({
+        ...editingBranch,
+        nameAr: bNameAr,
+        name: bNameEn || bNameAr,
+        cityAr: bCityAr || 'القاهرة',
+        city: bCityEn || 'Cairo',
+        addressAr: bAddressAr,
+        address: bAddressEn || bAddressAr,
+        phone: bPhone,
+        whatsapp: bWhatsapp || bPhone,
+        hoursAr: bHoursAr || 'يومياً من 11:00 صباحاً حتى 11:00 مساءً',
+        hours: bHoursEn || '11:00 AM - 11:00 PM'
+      });
+    } else {
+      const newBranch: StoreBranch = {
+        id: `branch-${Date.now()}`,
+        nameAr: bNameAr,
+        name: bNameEn || bNameAr,
+        cityAr: bCityAr || 'القاهرة',
+        city: bCityEn || 'Cairo',
+        addressAr: bAddressAr,
+        address: bAddressEn || bAddressAr,
+        phone: bPhone,
+        whatsapp: bWhatsapp || bPhone,
+        hoursAr: bHoursAr || 'يومياً من 11:00 صباحاً حتى 11:00 مساءً',
+        hours: bHoursEn || '11:00 AM - 11:00 PM'
+      };
+      onAddStoreBranch(newBranch);
+    }
+    setIsBranchModalOpen(false);
+  };
+
+  // Category Modal State
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<StoreCategory | null>(null);
+  const [catId, setCatId] = useState('');
+  const [catNameAr, setCatNameAr] = useState('');
+  const [catNameEn, setCatNameEn] = useState('');
+  const [catDescAr, setCatDescAr] = useState('');
+  const [catBadgeAr, setCatBadgeAr] = useState('');
+  const [catBgImage, setCatBgImage] = useState('');
+  const [catIconName, setCatIconName] = useState('Grid');
+
+  const openCategoryForm = (categoryToEdit?: StoreCategory) => {
+    if (categoryToEdit) {
+      setEditingCategory(categoryToEdit);
+      setCatId(categoryToEdit.id);
+      setCatNameAr(categoryToEdit.nameAr);
+      setCatNameEn(categoryToEdit.nameEn);
+      setCatDescAr(categoryToEdit.descriptionAr || '');
+      setCatBadgeAr(categoryToEdit.badgeAr || '');
+      setCatBgImage(categoryToEdit.bgImage || '');
+      setCatIconName(categoryToEdit.iconName || 'Grid');
+    } else {
+      setEditingCategory(null);
+      setCatId('');
+      setCatNameAr('');
+      setCatNameEn('');
+      setCatDescAr('');
+      setCatBadgeAr('');
+      setCatBgImage('');
+      setCatIconName('Grid');
+    }
+    setIsCategoryModalOpen(true);
+  };
+
+  const handleSaveCategory = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!catNameAr.trim()) return;
+
+    const finalId = editingCategory 
+      ? editingCategory.id 
+      : (catId.trim().toLowerCase().replace(/\s+/g, '-') || `cat-${Date.now()}`);
+
+    const categoryData: StoreCategory = {
+      id: finalId,
+      nameAr: catNameAr.trim(),
+      nameEn: catNameEn.trim() || catNameAr.trim(),
+      descriptionAr: catDescAr.trim(),
+      descriptionEn: catDescAr.trim(),
+      badgeAr: catBadgeAr.trim(),
+      badgeEn: catBadgeAr.trim(),
+      bgImage: catBgImage.trim() || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400&auto=format&fit=crop',
+      iconName: catIconName
+    };
+
+    if (editingCategory) {
+      onUpdateStoreCategory(categoryData);
+    } else {
+      onAddStoreCategory(categoryData);
+    }
+    setIsCategoryModalOpen(false);
+  };
 
   const formatPrice = (egp: number) => {
     return currency === 'USD' ? `$${Math.round(egp / 48)}` : `${egp.toLocaleString()} ج.م`;
@@ -379,12 +609,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
         {/* Navigation Tabs */}
         <div className="flex items-center gap-2 border-b border-slate-800 overflow-x-auto pb-3 text-xs sm:text-sm font-bold">
           {[
+            { id: 'categories', labelAr: `أقسام الموقع (${storeCategories.length})`, icon: Grid },
             { id: 'trade-in', labelAr: `قسم البدل والتثمين (${tradeInModels.length})`, icon: RefreshCw, badge: newTradeInCount },
             { id: 'products', labelAr: `الأجهزة والمنتجات (${products.length})`, icon: Package },
             { id: 'orders', labelAr: `طلبات الشراء (${orders.length})`, icon: ShoppingBag, badge: pendingOrdersCount },
             { id: 'repairs', labelAr: `تذاكر الصيانة (${repairTickets.length})`, icon: Wrench },
             { id: 'repair-services', labelAr: 'أسعار الصيانة والقطع', icon: DollarSign },
             { id: 'hero', labelAr: `العروض والبذرات (${heroSlides.length})`, icon: ImageIcon },
+            { id: 'branches', labelAr: `إدارة الفروع (${storeBranches.length})`, icon: MapPin },
             { id: 'analytics', labelAr: 'الإحصائيات المالية', icon: BarChart3 },
             { id: 'settings', labelAr: 'الإعدادات والتواصل', icon: Settings },
           ].map((tab) => {
@@ -411,6 +643,98 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             );
           })}
         </div>
+
+        {/* TAB 0: WEBSITE CATEGORIES CONTROL */}
+        {activeTab === 'categories' && (
+          <div className="space-y-8">
+            {/* Header Banner */}
+            <div className="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 p-6 rounded-3xl border border-emerald-500/40 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <span className="text-amber-400 font-extrabold text-xs bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30 mb-2 inline-block">
+                  التحكم المباشر في هيكل وأقسام المتجر
+                </span>
+                <h2 className="text-xl font-black text-white flex items-center gap-2">
+                  <Grid className="w-6 h-6 text-amber-400" />
+                  <span>إدارة أقسام وتصنيفات الموقع (Categories Control)</span>
+                </h2>
+                <p className="text-xs text-slate-300 mt-1">
+                  يمكنك هنا إضافة أقسام جديدة للموقع، تعديل مسميات وصور الأقسام الحالية، أو حذف الأقسام غير المرغوبة بسهولة.
+                </p>
+              </div>
+
+              <button
+                onClick={() => openCategoryForm()}
+                className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-5 py-3 rounded-xl transition-all shadow-md flex items-center gap-2 whitespace-nowrap"
+              >
+                <Plus className="w-4 h-4" />
+                <span>إضافة قسم جديد للموقع</span>
+              </button>
+            </div>
+
+            {/* Categories Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {storeCategories.map((cat) => (
+                <div 
+                  key={cat.id} 
+                  className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden p-5 flex flex-col justify-between space-y-4 hover:border-amber-500/50 transition-all group relative"
+                >
+                  <div className="relative h-28 rounded-xl overflow-hidden bg-slate-800">
+                    <img 
+                      src={cat.bgImage} 
+                      alt={cat.nameAr} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-80" 
+                      referrerPolicy="no-referrer" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+                    <div className="absolute bottom-2 right-2 left-2 flex justify-between items-end">
+                      <span className="bg-amber-500/90 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-md">
+                        {cat.badgeAr || 'قسم فعال'}
+                      </span>
+                      <span className="text-[10px] text-slate-300 font-mono bg-slate-900/80 px-2 py-0.5 rounded border border-slate-700">
+                        {cat.id}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="font-extrabold text-white text-base text-right flex items-center justify-between">
+                      <span>{cat.nameAr}</span>
+                    </h3>
+                    <p className="text-slate-400 text-xs text-right mt-0.5 font-mono">
+                      {cat.nameEn}
+                    </p>
+                    {cat.descriptionAr && (
+                      <p className="text-slate-400 text-[11px] text-right mt-2 line-clamp-2 bg-slate-950/50 p-2 rounded-lg border border-slate-800/80">
+                        {cat.descriptionAr}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                    <button
+                      onClick={() => openCategoryForm(cat)}
+                      className="flex-1 bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold py-2 rounded-xl flex items-center justify-center gap-1.5 transition-colors"
+                    >
+                      <Edit className="w-3.5 h-3.5" />
+                      <span>تعديل</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (confirm(`هل أنت تأكد من رغبتك في حذف قسم "${cat.nameAr}"؟`)) {
+                          onDeleteStoreCategory(cat.id);
+                        }
+                      }}
+                      className="bg-rose-900/40 hover:bg-rose-600 text-rose-300 hover:text-white p-2 rounded-xl transition-colors"
+                      title="حذف القسم"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* TAB 1: TRADE-IN & VALUATION CONTROL */}
         {activeTab === 'trade-in' && (
@@ -839,39 +1163,120 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
         )}
 
-        {/* TAB 5: REPAIR SERVICES PRICING */}
+        {/* TAB 5: REPAIR SERVICES PRICING & MANAGEMENT */}
         {activeTab === 'repair-services' && (
           <div className="space-y-6">
-            <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex justify-between items-center text-xs font-bold text-slate-300">
-              <span>تعديل قائمة أسعار تغيير الشاشات والبطاريات والباغة الأصلية</span>
+            <div className="bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-900 p-6 rounded-3xl border border-emerald-500/40 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <span className="text-amber-400 font-extrabold text-xs bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30 mb-2 inline-block">
+                  كتالوج خدمات وأعطال الصيانة وقطع الغيار
+                </span>
+                <h2 className="text-xl font-black text-white">إضافة وتعديل خدمات الصيانة وأسعار القطع والضمان</h2>
+                <p className="text-xs text-slate-300 mt-1">
+                  يمكنك إضافة أنواع صيانة جديدة لموديلات أبل المختلفة (آيفون، ماك، آيباد، أبل ووتش) وتحديد التكلفة التقديرية ومدة الصيانة والضمان التي تظهر للعملاء.
+                </p>
+              </div>
+
+              <button
+                onClick={() => openServiceForm()}
+                className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-5 py-3 rounded-xl transition-all shadow-md flex items-center gap-2 whitespace-nowrap"
+              >
+                <Plus className="w-4 h-4" />
+                <span>إضافة خدمة صيانة جديدة</span>
+              </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {repairServices.map((service) => (
-                <div key={service.id} className="bg-slate-900 p-5 rounded-2xl border border-slate-800 space-y-3">
-                  <div className="flex justify-between items-start">
-                    <span className="font-black text-amber-300 text-sm">{service.modelName}</span>
-                    <span className="font-black text-emerald-400 text-lg">{formatPrice(service.estimatedPriceEgp)}</span>
-                  </div>
+            {/* Filter & Search Bar for Repair Services */}
+            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-slate-900 p-4 rounded-2xl border border-slate-800">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+                {[
+                  { id: 'all', label: 'جميع الأجهزة' },
+                  { id: 'iphone', label: 'آيفون iPhone' },
+                  { id: 'ipad', label: 'آيباد iPad' },
+                  { id: 'mac', label: 'ماك بوك Mac' },
+                  { id: 'watch', label: 'ساعة أبل Watch' },
+                ].map((type) => (
+                  <button
+                    key={type.id}
+                    onClick={() => setRsFilterDeviceType(type.id)}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-extrabold whitespace-nowrap transition-colors ${
+                      rsFilterDeviceType === type.id
+                        ? 'bg-amber-500 text-slate-950'
+                        : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                    }`}
+                  >
+                    {type.label}
+                  </button>
+                ))}
+              </div>
 
-                  <p className="font-extrabold text-xs text-white">{service.issueNameAr}</p>
-                  <p className="text-slate-400 text-xs leading-relaxed">{service.descriptionAr}</p>
+              <div className="relative min-w-[220px]">
+                <Search className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={rsSearchQuery}
+                  onChange={(e) => setRsSearchQuery(e.target.value)}
+                  placeholder="بحث عن موديل أو عطل..."
+                  className="w-full bg-slate-950 border border-slate-800 pr-9 pl-3 py-1.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-400"
+                />
+              </div>
+            </div>
 
-                  <div className="flex justify-between items-center pt-3 border-t border-slate-800 text-xs">
-                    <span className="text-slate-400">الضمان: {service.warrantyMonths} أشهر | المدة: {service.estimatedTimeMinutes} دقيقة</span>
-                    <button
-                      onClick={() => {
-                        setEditingService(service);
-                        setSPriceEgp(service.estimatedPriceEgp);
-                      }}
-                      className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-4 py-1.5 rounded-xl text-xs flex items-center gap-1"
-                    >
-                      <Edit className="w-3.5 h-3.5" />
-                      <span>تعديل السعر</span>
-                    </button>
+            {/* Repair Services Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {repairServices
+                .filter((s) => rsFilterDeviceType === 'all' || s.deviceType === rsFilterDeviceType)
+                .filter((s) => !rsSearchQuery || s.modelName.toLowerCase().includes(rsSearchQuery.toLowerCase()) || s.issueNameAr.includes(rsSearchQuery))
+                .map((service) => (
+                  <div key={service.id} className="bg-slate-900 p-5 rounded-2xl border border-slate-800 space-y-3 hover:border-emerald-500/50 transition-colors flex flex-col justify-between shadow-xl">
+                    <div className="space-y-2.5">
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-black uppercase tracking-wider bg-slate-800 text-amber-300 px-2.5 py-1 rounded-full border border-slate-700">
+                            {service.deviceType}
+                          </span>
+                          <span className="font-black text-amber-300 text-sm">{service.modelName}</span>
+                        </div>
+                        <span className="font-black text-emerald-400 text-base">{formatPrice(service.estimatedPriceEgp)}</span>
+                      </div>
+
+                      <p className="font-extrabold text-xs text-white">{service.issueNameAr}</p>
+                      <p className="text-slate-400 text-[11px] leading-relaxed">{service.descriptionAr}</p>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-800 space-y-3">
+                      <div className="flex items-center justify-between text-[11px] font-bold text-slate-400">
+                        <span className="flex items-center gap-1 text-amber-400">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>المدة: {service.estimatedTimeMinutes} دقيقة</span>
+                        </span>
+                        <span className="flex items-center gap-1 text-emerald-400">
+                          <ShieldCheck className="w-3.5 h-3.5" />
+                          <span>الضمان: {service.warrantyMonths} أشهر</span>
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => openServiceForm(service)}
+                          className="bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors"
+                        >
+                          <Edit className="w-3.5 h-3.5" />
+                          <span>تعديل</span>
+                        </button>
+                        {onDeleteRepairService && (
+                          <button
+                            onClick={() => onDeleteRepairService(service.id)}
+                            className="bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-800/50 text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>حذف</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         )}
@@ -968,7 +1373,94 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
           </div>
         )}
 
-        {/* TAB 8: SETTINGS & STORE CONTACTS */}
+        {/* TAB 8: STORE BRANCHES MANAGEMENT */}
+        {activeTab === 'branches' && (
+          <div className="space-y-6">
+            <div className="bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-900 p-6 rounded-3xl border border-emerald-500/40 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <span className="text-amber-400 font-extrabold text-xs bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/30 mb-2 inline-block">
+                  إدارة فروع وسلسلة ومراكز صيانة SOLIMAN - MEGA SYSTEM
+                </span>
+                <h2 className="text-xl font-black text-white">إضافة، تعديل، وحذف فروع المتجر وأرقام التواصل والعناوين</h2>
+                <p className="text-xs text-slate-300 mt-1">
+                  يمكنك التحكم الكامل بعناوين الفروع، أرقام الهاتف، ساعات العمل، والتفاصيل التي تظهر للعملاء في أسفل الموقع وقسم حجز الصيانة.
+                </p>
+              </div>
+
+              <button
+                onClick={() => openBranchForm()}
+                className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-5 py-3 rounded-xl transition-all shadow-md flex items-center gap-2 whitespace-nowrap"
+              >
+                <Plus className="w-4 h-4" />
+                <span>إضافة فرع جديد</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {storeBranches.map((branch) => (
+                <div key={branch.id} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 hover:border-emerald-500/50 transition-colors relative flex flex-col justify-between shadow-xl">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-950 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                          <MapPin className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h4 className="font-extrabold text-sm text-white">{branch.nameAr}</h4>
+                          <p className="text-[11px] text-slate-400 font-medium">{branch.name}</p>
+                        </div>
+                      </div>
+                      <span className="bg-slate-800 text-amber-300 text-[10px] font-bold px-2.5 py-1 rounded-full border border-slate-700 shrink-0">
+                        {branch.cityAr}
+                      </span>
+                    </div>
+
+                    <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/80 space-y-2.5 text-xs">
+                      <div className="flex items-start gap-2 text-slate-300">
+                        <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                        <span className="leading-relaxed">{branch.addressAr}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-emerald-400 font-mono font-bold pt-1 border-t border-slate-800/60">
+                        <div className="flex items-center gap-1.5">
+                          <Phone className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>{branch.phone}</span>
+                        </div>
+                        {branch.whatsapp && (
+                          <span className="text-[10px] bg-emerald-950/80 text-emerald-300 px-2 py-0.5 rounded border border-emerald-800/50">
+                            واتساب: {branch.whatsapp}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 text-slate-400 text-[11px]">
+                        <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <span>{branch.hoursAr}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-slate-800 flex items-center justify-end gap-2">
+                    <button
+                      onClick={() => openBranchForm(branch)}
+                      className="bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors"
+                    >
+                      <Edit className="w-3.5 h-3.5" />
+                      <span>تعديل</span>
+                    </button>
+                    <button
+                      onClick={() => onDeleteStoreBranch(branch.id)}
+                      className="bg-rose-950/60 hover:bg-rose-900/80 text-rose-300 border border-rose-800/50 text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>حذف</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 9: SETTINGS & STORE CONTACTS */}
         {activeTab === 'settings' && (
           <div className="bg-slate-900 p-6 rounded-3xl border border-slate-800 space-y-6 max-w-3xl">
             <h3 className="font-black text-lg text-white">إعدادات المتجر وشريط العروض وأرقام التواصل</h3>
@@ -1220,13 +1712,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                     onChange={(e) => setPCategory(e.target.value as CategoryId)}
                     className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 font-bold focus:outline-none"
                   >
-                    <option value="iphones">آيفون (iPhones)</option>
-                    <option value="macs">ماك بوك (Macs)</option>
-                    <option value="ipads">آيباد (iPads)</option>
-                    <option value="watches">ساعات (Watches)</option>
-                    <option value="audio">آوديو (Audio)</option>
-                    <option value="accessories">إكسسوارات</option>
-                    <option value="used">الأجهزة المستعملة (Used)</option>
+                    {storeCategories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.nameAr} ({c.id})
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -1436,6 +1926,433 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               >
                 تحديث السعر فوراً
               </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: ADD / EDIT STORE BRANCH */}
+      {isBranchModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <div className="bg-slate-900 text-white rounded-3xl max-w-lg w-full p-6 space-y-5 border border-slate-700 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setIsBranchModalOpen(false)}
+              className="absolute top-4 left-4 p-2 bg-slate-800 text-slate-400 hover:text-white rounded-full transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3 border-b border-slate-800 pb-4">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                <MapPin className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-black text-base text-amber-300">
+                  {editingBranch ? 'تعديل بيانات الفرع' : 'إضافة فرع جديد للشبكة'}
+                </h3>
+                <p className="text-xs text-slate-400">أدخل تفاصيل العنوان وأرقام التواصل التي ستظهر للعملاء</p>
+              </div>
+            </div>
+
+            <form onSubmit={handleSaveBranch} className="space-y-4 text-xs text-right">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">اسم الفرع (بالعربية): *</label>
+                  <input
+                    type="text"
+                    required
+                    value={bNameAr}
+                    onChange={(e) => setBNameAr(e.target.value)}
+                    placeholder="فرع الشيخ زايد (مول العرب)"
+                    className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">اسم الفرع (بالإنجليزية):</label>
+                  <input
+                    type="text"
+                    value={bNameEn}
+                    onChange={(e) => setBNameEn(e.target.value)}
+                    placeholder="Sheikh Zayed Branch"
+                    className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">المحافظة / المدينة (بالعربية):</label>
+                  <input
+                    type="text"
+                    required
+                    value={bCityAr}
+                    onChange={(e) => setBCityAr(e.target.value)}
+                    placeholder="الجيزة"
+                    className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">City (In English):</label>
+                  <input
+                    type="text"
+                    value={bCityEn}
+                    onChange={(e) => setBCityEn(e.target.value)}
+                    placeholder="Giza"
+                    className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-300 block mb-1">العنوان التفصيلي (بالعربية): *</label>
+                <textarea
+                  rows={2}
+                  required
+                  value={bAddressAr}
+                  onChange={(e) => setBAddressAr(e.target.value)}
+                  placeholder="شارع المحور المركزي، أمام بوابة 2 مول العرب..."
+                  className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-300 block mb-1">Address Details (In English):</label>
+                <textarea
+                  rows={2}
+                  value={bAddressEn}
+                  onChange={(e) => setBAddressEn(e.target.value)}
+                  placeholder="Central Axis St, Opposite Mall of Arabia Gate 2..."
+                  className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">رقم الهاتف للاتصال المباشر: *</label>
+                  <input
+                    type="tel"
+                    required
+                    value={bPhone}
+                    onChange={(e) => setBPhone(e.target.value)}
+                    placeholder="010XXXXXXXX"
+                    className="w-full bg-slate-950 border border-slate-700 text-emerald-400 font-mono font-bold rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">رقم الواتساب للفرع:</label>
+                  <input
+                    type="tel"
+                    value={bWhatsapp}
+                    onChange={(e) => setBWhatsapp(e.target.value)}
+                    placeholder="2010XXXXXXXX"
+                    className="w-full bg-slate-950 border border-slate-700 text-emerald-400 font-mono font-bold rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">ساعات العمل (بالعربية):</label>
+                  <input
+                    type="text"
+                    value={bHoursAr}
+                    onChange={(e) => setBHoursAr(e.target.value)}
+                    placeholder="يومياً من 11:00 صباحاً حتى 11:00 مساءً"
+                    className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">Working Hours (In English):</label>
+                  <input
+                    type="text"
+                    value={bHoursEn}
+                    onChange={(e) => setBHoursEn(e.target.value)}
+                    placeholder="11:00 AM - 11:00 PM Daily"
+                    className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm py-3.5 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
+              >
+                <Save className="w-4 h-4" />
+                <span>{editingBranch ? 'حفظ تعديلات الفرع' : 'إضافة الفرع فوراً للموقع'}</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: ADD / EDIT REPAIR SERVICE */}
+      {isServiceModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+          <div className="bg-slate-900 text-white rounded-3xl max-w-lg w-full p-6 space-y-5 border border-slate-700 relative shadow-2xl max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setIsServiceModalOpen(false)}
+              className="absolute top-4 left-4 p-2 bg-slate-800 text-slate-400 hover:text-white rounded-full transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3 border-b border-slate-800 pb-4">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                <Wrench className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-black text-base text-amber-300">
+                  {editingService ? 'تعديل خدمة صيانة' : 'إضافة خدمة صيانة جديدة'}
+                </h3>
+                <p className="text-xs text-slate-400">أدخل تفاصيل نوع الجهاز والعطل والسعر التقديري والضمان</p>
+              </div>
+            </div>
+
+            <form onSubmit={handleSaveRepairService} className="space-y-4 text-xs text-right">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">نوع الجهاز: *</label>
+                  <select
+                    value={rsDeviceType}
+                    onChange={(e) => setRsDeviceType(e.target.value as any)}
+                    className="w-full bg-slate-950 border border-slate-700 text-white font-bold rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  >
+                    <option value="iphone">آيفون (iPhone)</option>
+                    <option value="ipad">آيباد (iPad)</option>
+                    <option value="mac">ماك بوك (MacBook)</option>
+                    <option value="watch">ساعة أبل (Apple Watch)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">اسم الموديل: *</label>
+                  <input
+                    type="text"
+                    required
+                    value={rsModelName}
+                    onChange={(e) => setRsModelName(e.target.value)}
+                    placeholder="مثال: iPhone 15 Pro Max"
+                    className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">اسم العطل / الخدمة (بالعربية): *</label>
+                  <input
+                    type="text"
+                    required
+                    value={rsIssueNameAr}
+                    onChange={(e) => setRsIssueNameAr(e.target.value)}
+                    placeholder="مثال: تغيير شاشة أصلية مع TrueTone"
+                    className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">اسم العطل (بالإنجليزية):</label>
+                  <input
+                    type="text"
+                    value={rsIssueNameEn}
+                    onChange={(e) => setRsIssueNameEn(e.target.value)}
+                    placeholder="e.g. Original Screen Replacement"
+                    className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">التكلفة التقديرية (ج.م):</label>
+                  <input
+                    type="number"
+                    required
+                    value={rsPriceEgp}
+                    onChange={(e) => setRsPriceEgp(Number(e.target.value))}
+                    placeholder="2500"
+                    className="w-full bg-slate-950 border border-slate-700 text-emerald-400 font-bold rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">مدة الصيانة (بالدقائق):</label>
+                  <input
+                    type="number"
+                    required
+                    value={rsTimeMinutes}
+                    onChange={(e) => setRsTimeMinutes(Number(e.target.value))}
+                    placeholder="45"
+                    className="w-full bg-slate-950 border border-slate-700 text-amber-300 font-bold rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">مدة الضمان (بالأشهر):</label>
+                  <input
+                    type="number"
+                    required
+                    value={rsWarrantyMonths}
+                    onChange={(e) => setRsWarrantyMonths(Number(e.target.value))}
+                    placeholder="6"
+                    className="w-full bg-slate-950 border border-slate-700 text-white font-bold rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-300 block mb-1">تفاصيل الخدمة والقطع المستخدمة:</label>
+                <textarea
+                  rows={2}
+                  value={rsDescriptionAr}
+                  onChange={(e) => setRsDescriptionAr(e.target.value)}
+                  placeholder="استبدال شاشة جديدة أصلية مع معايرة الألوان ونقل خاصية TrueTone وضمان معتمد..."
+                  className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm py-3.5 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
+              >
+                <Save className="w-4 h-4" />
+                <span>{editingService ? 'حفظ تعديلات الخدمة' : 'إضافة الخدمة فوراً للموقع'}</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: ADD / EDIT CATEGORY */}
+      {isCategoryModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
+          <div className="bg-slate-900 text-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 border border-slate-700 relative shadow-2xl my-8">
+            <button
+              onClick={() => setIsCategoryModalOpen(false)}
+              className="absolute top-4 left-4 p-2 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-full"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h3 className="font-black text-lg text-amber-300 flex items-center gap-2">
+              <Grid className="w-5 h-5 text-amber-400" />
+              <span>{editingCategory ? 'تعديل بيانات القسم' : 'إضافة قسم جديد للموقع'}</span>
+            </h3>
+
+            <form onSubmit={handleSaveCategory} className="space-y-4 text-xs text-right">
+              {!editingCategory && (
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">
+                    معرف / كود القسم (Category ID / Slug): *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={catId}
+                    onChange={(e) => setCatId(e.target.value)}
+                    placeholder="مثال: gaming, chargers, cameras"
+                    className="w-full bg-slate-950 border border-slate-700 text-amber-300 font-mono font-bold rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">استخدم حروف إنجليزية صغيرة بدون مسافات (مثال: gaming, audio, accessories)</p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">اسم القسم باللغة العربية: *</label>
+                  <input
+                    type="text"
+                    required
+                    value={catNameAr}
+                    onChange={(e) => setCatNameAr(e.target.value)}
+                    placeholder="مثال: أجهزة جيمنج وبلايستيشن"
+                    className="w-full bg-slate-950 border border-slate-700 text-white font-bold rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">اسم القسم بالإنجليزية:</label>
+                  <input
+                    type="text"
+                    value={catNameEn}
+                    onChange={(e) => setCatNameEn(e.target.value)}
+                    placeholder="Gaming & Consoles"
+                    className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-300 block mb-1">وصف مختصر للقسم:</label>
+                <input
+                  type="text"
+                  value={catDescAr}
+                  onChange={(e) => setCatDescAr(e.target.value)}
+                  placeholder="أحدث أجهزة الألعاب وأيد التحكم الأصلية مع ضمان"
+                  className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">وسم المميزات (Badge):</label>
+                  <input
+                    type="text"
+                    value={catBadgeAr}
+                    onChange={(e) => setCatBadgeAr(e.target.value)}
+                    placeholder="جديد وحصري / خصم 10%"
+                    className="w-full bg-slate-950 border border-slate-700 text-amber-300 font-bold rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-slate-300 block mb-1">أيقونة القسم:</label>
+                  <select
+                    value={catIconName}
+                    onChange={(e) => setCatIconName(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl p-3 font-bold focus:outline-none"
+                  >
+                    <option value="Smartphone">Smartphone (هاتف)</option>
+                    <option value="Laptop">Laptop (ماك / لابتوب)</option>
+                    <option value="Tablet">Tablet (آيباد / تابلت)</option>
+                    <option value="Watch">Watch (ساعة)</option>
+                    <option value="Headphones">Headphones (سماعة)</option>
+                    <option value="Cable">Cable (شاحن / كابل)</option>
+                    <option value="Sparkles">Sparkles (مستعمل / زيرو)</option>
+                    <option value="Wrench">Wrench (صيانة)</option>
+                    <option value="Shield">Shield (حماية)</option>
+                    <option value="Zap">Zap (شحن سريع)</option>
+                    <option value="Tag">Tag (عرض)</option>
+                    <option value="Grid">Grid (عام)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-300 block mb-1">رابط الصورة التوضيحية للقسم (Image URL):</label>
+                <input
+                  type="text"
+                  value={catBgImage}
+                  onChange={(e) => setCatBgImage(e.target.value)}
+                  placeholder="https://images.unsplash.com/..."
+                  className="w-full bg-slate-950 border border-slate-700 text-slate-300 font-mono text-[11px] rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div className="pt-4 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsCategoryModalOpen(false)}
+                  className="px-5 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700 transition-all"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>حفظ القسم</span>
+                </button>
+              </div>
             </form>
           </div>
         </div>

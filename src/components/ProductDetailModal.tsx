@@ -36,7 +36,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const finalPriceEgp = product.priceEgp + (selectedStorage?.priceModifierEgp || 0);
 
   const formatPrice = (priceEgp: number) => {
-    return currency === 'USD' ? `$${Math.round(priceEgp / 48)}` : `${priceEgp.toLocaleString()} ج.م`;
+    return currency === 'USD' ? `$${Math.round(priceEgp / 48)}` : (isAr ? `${priceEgp.toLocaleString()} ج.م` : `EGP ${priceEgp.toLocaleString()}`);
   };
 
   return (

@@ -1,32 +1,51 @@
 import React from 'react';
 import { 
   Smartphone, Laptop, Tablet, Watch, Headphones, Cable, 
-  Sparkles, Wrench, ArrowUpLeft, ChevronLeft 
+  Sparkles, Wrench, ArrowUpLeft, ChevronLeft, Tag, Shield, Zap, Grid
 } from 'lucide-react';
-import { CategoryId, Language } from '../types';
+import { CategoryId, Language, StoreCategory } from '../types';
 
 interface CategoryGridProps {
   language: Language;
   selectedCategory: CategoryId;
   onSelectCategory: (cat: CategoryId) => void;
+  categories?: StoreCategory[];
 }
 
 export const CategoryGrid: React.FC<CategoryGridProps> = ({
   language,
   selectedCategory,
-  onSelectCategory
+  onSelectCategory,
+  categories
 }) => {
   const isAr = language === 'ar';
 
-  const categoryItems = [
+  const getCategoryIcon = (iconName?: string) => {
+    switch (iconName) {
+      case 'Smartphone': return Smartphone;
+      case 'Laptop': return Laptop;
+      case 'Tablet': return Tablet;
+      case 'Watch': return Watch;
+      case 'Headphones': return Headphones;
+      case 'Cable': return Cable;
+      case 'Sparkles': return Sparkles;
+      case 'Wrench': return Wrench;
+      case 'Shield': return Shield;
+      case 'Zap': return Zap;
+      case 'Tag': return Tag;
+      default: return Grid;
+    }
+  };
+
+  const defaultCategoryItems = [
     {
       id: 'iphones' as CategoryId,
       nameAr: 'أجهزة آيفون',
       nameEn: 'iPhones',
       descAr: '16 Pro Max, 16, 15 Pro, 14',
       descEn: 'Latest flagship models',
-      countAr: '32 جهاز متوفر',
-      countEn: '32 Items Available',
+      countAr: 'أحدث الموديلات متوفرة',
+      countEn: 'Latest models available',
       icon: Smartphone,
       gradient: 'from-emerald-800 to-emerald-950',
       badgeAr: 'جديد ومستعمل',
@@ -39,8 +58,8 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
       nameEn: 'MacBook & Mac',
       descAr: 'M3 Pro, M3 Max, M2 Air',
       descEn: 'Ultimate performance laptops',
-      countAr: '14 نموذج متوفر',
-      countEn: '14 Models',
+      countAr: 'أجهزة احترافية',
+      countEn: 'Pro laptops',
       icon: Laptop,
       gradient: 'from-slate-800 to-slate-950',
       badgeAr: 'ضمان سنة',
@@ -53,8 +72,8 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
       nameEn: 'iPads',
       descAr: 'iPad Pro M4, Air M2, Mini',
       descEn: 'Ultra Retina OLED displays',
-      countAr: '18 جهاز متوفر',
-      countEn: '18 Models',
+      countAr: 'للإنتاجية والتصميم',
+      countEn: 'For productivity & art',
       icon: Tablet,
       gradient: 'from-emerald-900 to-teal-950',
       badgeAr: 'أنحف آيباد',
@@ -67,8 +86,8 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
       nameEn: 'Apple Watch',
       descAr: 'Ultra 2, Series 10, SE',
       descEn: 'Advanced health & GPS tracking',
-      countAr: '12 ساعة متوفرة',
-      countEn: '12 Watches',
+      countAr: 'ساعات أبل الذكية',
+      countEn: 'Apple Smart Watches',
       icon: Watch,
       gradient: 'from-amber-900/80 to-slate-950',
       badgeAr: 'تيتانيوم 49 مم',
@@ -81,8 +100,8 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
       nameEn: 'AirPods & Audio',
       descAr: 'AirPods Max USB-C, Pro 2',
       descEn: 'Active Noise Cancellation',
-      countAr: '10 موديلات',
-      countEn: '10 Models',
+      countAr: 'عزل صوتي خيالي',
+      countEn: 'ANC Studio quality',
       icon: Headphones,
       gradient: 'from-slate-900 to-emerald-950',
       badgeAr: 'عزل صوتي خيالي',
@@ -95,8 +114,8 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
       nameEn: 'Original Accessories',
       descAr: 'Anker, MagSafe, Spigen',
       descEn: 'Fast chargers & protection cases',
-      countAr: '65 منتج أوريجينال',
-      countEn: '65 Products',
+      countAr: 'منتجات أصلية 100%',
+      countEn: '100% Original products',
       icon: Cable,
       gradient: 'from-emerald-950 to-slate-900',
       badgeAr: 'معتمد رسمياً',
@@ -132,6 +151,23 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
       bgImage: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=400&auto=format&fit=crop'
     }
   ];
+
+  const categoryItems = (categories && categories.length > 0)
+    ? categories.map(c => ({
+        id: c.id,
+        nameAr: c.nameAr,
+        nameEn: c.nameEn,
+        descAr: c.descriptionAr || c.nameAr,
+        descEn: c.descriptionEn || c.nameEn,
+        countAr: 'منتجات وأجهزة متاحة',
+        countEn: 'Available items',
+        icon: getCategoryIcon(c.iconName),
+        gradient: 'from-slate-800 to-emerald-950',
+        badgeAr: c.badgeAr || 'متوفر بالمتجر',
+        badgeEn: c.badgeEn || 'In Store',
+        bgImage: c.bgImage || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400&auto=format&fit=crop'
+      }))
+    : defaultCategoryItems;
 
   return (
     <section className="py-10 px-4 bg-slate-50 font-sans border-b border-slate-200">

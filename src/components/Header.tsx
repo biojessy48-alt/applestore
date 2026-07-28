@@ -4,7 +4,7 @@ import {
   MapPin, Phone, Globe, ChevronDown, Menu, X, Check, ArrowRight,
   Clock, ShieldCheck, Sparkles
 } from 'lucide-react';
-import { CategoryId, Currency, Language, CartItem, Product } from '../types';
+import { CategoryId, Currency, Language, CartItem, Product, StoreCategory } from '../types';
 
 interface HeaderProps {
   language: Language;
@@ -25,6 +25,7 @@ interface HeaderProps {
   onOpenAiAdvisor: () => void;
   onOpenAdminPanel: () => void;
   announcementText?: string;
+  storeCategories?: StoreCategory[];
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -45,7 +46,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenTradeIn,
   onOpenAiAdvisor,
   onOpenAdminPanel,
-  announcementText
+  announcementText,
+  storeCategories
 }) => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -60,16 +62,22 @@ export const Header: React.FC<HeaderProps> = ({
       ).slice(0, 5)
     : [];
 
-  const categories = [
-    { id: 'all' as CategoryId, nameEn: 'All Catalog', nameAr: 'جميع الأقسام' },
-    { id: 'iphones' as CategoryId, nameEn: 'iPhones', nameAr: 'آيفون' },
-    { id: 'macs' as CategoryId, nameEn: 'Macs', nameAr: 'ماك بوك' },
-    { id: 'ipads' as CategoryId, nameEn: 'iPads', nameAr: 'آيباد' },
-    { id: 'watches' as CategoryId, nameEn: 'Apple Watch', nameAr: 'ساعات أبل' },
-    { id: 'audio' as CategoryId, nameEn: 'AirPods & Audio', nameAr: 'سماعات وآوديو' },
-    { id: 'accessories' as CategoryId, nameEn: 'Accessories', nameAr: 'إكسسوارات أصلية' },
-    { id: 'used' as CategoryId, nameEn: 'Used & Open Box', nameAr: 'المستعمل والمجدد (زيرو)' },
-    { id: 'maintenance' as CategoryId, nameEn: 'Repair Services', nameAr: 'مركز الصيانة المعتمد' },
+  const defaultCategories: StoreCategory[] = [
+    { id: 'iphones', nameAr: 'آيفون', nameEn: 'iPhones' },
+    { id: 'macs', nameAr: 'ماك بوك', nameEn: 'Macs' },
+    { id: 'ipads', nameAr: 'آيباد', nameEn: 'iPads' },
+    { id: 'watches', nameAr: 'ساعات أبل', nameEn: 'Apple Watch' },
+    { id: 'audio', nameAr: 'سماعات وآوديو', nameEn: 'AirPods & Audio' },
+    { id: 'accessories', nameAr: 'إكسسوارات أصلية', nameEn: 'Accessories' },
+    { id: 'used', nameAr: 'المستعمل والمجدد (زيرو)', nameEn: 'Used & Open Box' },
+    { id: 'maintenance', nameAr: 'مركز الصيانة المعتمد', nameEn: 'Repair Services' },
+  ];
+
+  const activeStoreCategories = storeCategories && storeCategories.length > 0 ? storeCategories : defaultCategories;
+
+  const navCategories = [
+    { id: 'all', nameEn: 'All Catalog', nameAr: 'جميع الأقسام' },
+    ...activeStoreCategories
   ];
 
   const isAr = language === 'ar';
@@ -92,15 +100,6 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           <div className="flex items-center gap-4 text-xs">
-            {/* Admin Dashboard Quick Access Button */}
-            <button
-              onClick={onOpenAdminPanel}
-              className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-3 py-1 rounded-full text-[11px] flex items-center gap-1 shadow-sm transition-all hover:scale-105"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-slate-950" />
-              <span>{isAr ? 'لوحة التحكم' : 'Admin Dashboard'}</span>
-            </button>
-
             {/* Currency Selector */}
             <div className="flex items-center gap-1 text-emerald-300/80">
               <button 
@@ -268,7 +267,7 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Main Categories Navigation Bar */}
       <nav className="bg-slate-900 text-slate-200 border-t border-slate-800 overflow-x-auto scrollbar-none">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-start md:justify-between gap-1 text-xs sm:text-sm font-semibold py-1">
-          {categories.map((cat) => {
+          {navCategories.map((cat) => {
             const isActive = selectedCategory === cat.id;
             return (
               <button
@@ -307,7 +306,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           <div className="space-y-2 mb-8">
             <p className="text-xs text-slate-400 font-bold uppercase mb-2">الأقسام الرئيسية</p>
-            {categories.map((cat) => (
+            {navCategories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => {
