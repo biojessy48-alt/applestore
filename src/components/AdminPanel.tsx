@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { 
   Product, RepairService, RepairTicket, Language, Currency, CategoryId, ProductCondition,
-  TradeInModel, TradeInRequest, HeroSlide, StoreBranch, StoreCategory
+  TradeInModel, TradeInRequest, HeroSlide, StoreBranch, StoreCategory, SocialLinks
 } from '../types';
 
 export interface OrderItem {
@@ -73,6 +73,8 @@ interface AdminPanelProps {
   setStorePhone: (text: string) => void;
   storeWhatsApp: string;
   setStoreWhatsApp: (text: string) => void;
+  socialLinks?: SocialLinks;
+  setSocialLinks?: React.Dispatch<React.SetStateAction<SocialLinks>> | ((links: SocialLinks) => void);
   onBackToStore: () => void;
 }
 
@@ -115,6 +117,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   setStorePhone,
   storeWhatsApp,
   setStoreWhatsApp,
+  socialLinks,
+  setSocialLinks,
   onBackToStore
 }) => {
   const isAr = language === 'ar';

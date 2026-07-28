@@ -3,8 +3,9 @@ import {
   MapPin, Phone, MessageSquare, Clock, ShieldCheck, CreditCard, 
   RefreshCw, Wrench, Heart, Send, Sparkles 
 } from 'lucide-react';
-import { Language, Currency, StoreBranch } from '../types';
+import { Language, Currency, StoreBranch, SocialLinks } from '../types';
 import { mockStoreBranches } from '../data/mockData';
+import { SocialIcons } from './SocialIcons';
 
 interface FooterProps {
   language: Language;
@@ -14,6 +15,7 @@ interface FooterProps {
   onOpenRepair: () => void;
   onOpenAdminAuth?: () => void;
   onSelectCategory?: (cat: any) => void;
+  socialLinks?: SocialLinks;
 }
 
 export const Footer: React.FC<FooterProps> = ({
@@ -23,7 +25,8 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenTradeIn,
   onOpenRepair,
   onOpenAdminAuth,
-  onSelectCategory
+  onSelectCategory,
+  socialLinks
 }) => {
   const isAr = language === 'ar';
 
@@ -49,9 +52,17 @@ export const Footer: React.FC<FooterProps> = ({
                 : 'Premier Apple store & certified repair hub in Egypt. Genuine products, 1-year guarantee & instant trade-in.'}
             </p>
 
-            <div className="flex items-center gap-3 pt-2 text-xs font-bold">
+            {/* Social Media Channels */}
+            <div className="pt-1">
+              <span className="text-[11px] font-bold text-amber-400 block mb-2">
+                {isAr ? 'تابع صفحاتنا الرسمية والتحديثات:' : 'Follow Our Official Channels:'}
+              </span>
+              <SocialIcons socialLinks={socialLinks} size="lg" variant="footer" />
+            </div>
+
+            <div className="flex items-center gap-3 pt-1 text-xs font-bold">
               <a 
-                href="https://wa.me/201012345678" 
+                href={socialLinks?.whatsappUrl || "https://wa.me/201012345678"} 
                 target="_blank" 
                 rel="noreferrer"
                 className="bg-emerald-800 hover:bg-emerald-700 text-amber-300 px-4 py-2 rounded-xl flex items-center gap-1.5 transition-colors"

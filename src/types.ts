@@ -15,6 +15,14 @@ export interface StoreCategory {
   iconName?: string;
 }
 
+export interface SocialLinks {
+  facebookUrl: string;
+  instagramUrl: string;
+  tiktokUrl: string;
+  whatsappUrl: string;
+  youtubeUrl: string;
+}
+
 export type ProductCondition = 'New' | 'Like New (99%)' | 'Grade A+ (95%)' | 'Refurbished';
 
 export interface ProductColor {

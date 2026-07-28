@@ -4,7 +4,8 @@ import {
   MapPin, Phone, Globe, ChevronDown, Menu, X, Check, ArrowRight,
   Clock, ShieldCheck, Sparkles
 } from 'lucide-react';
-import { CategoryId, Currency, Language, CartItem, Product, StoreCategory } from '../types';
+import { CategoryId, Currency, Language, CartItem, Product, StoreCategory, SocialLinks } from '../types';
+import { SocialIcons } from './SocialIcons';
 
 interface HeaderProps {
   language: Language;
@@ -26,6 +27,7 @@ interface HeaderProps {
   onOpenAdminPanel: () => void;
   announcementText?: string;
   storeCategories?: StoreCategory[];
+  socialLinks?: SocialLinks;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -47,7 +49,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAiAdvisor,
   onOpenAdminPanel,
   announcementText,
-  storeCategories
+  storeCategories,
+  socialLinks
 }) => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -99,9 +102,12 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </div>
 
-          <div className="flex items-center gap-4 text-xs">
+          <div className="flex items-center gap-3 sm:gap-4 text-xs">
+            {/* Social Media Links */}
+            <SocialIcons socialLinks={socialLinks} size="sm" variant="header" />
+
             {/* Currency Selector */}
-            <div className="flex items-center gap-1 text-emerald-300/80">
+            <div className="flex items-center gap-1 text-emerald-300/80 border-r border-emerald-800/80 pr-3 mr-1">
               <button 
                 onClick={() => setCurrency('EGP')} 
                 className={`px-1.5 py-0.5 rounded ${currency === 'EGP' ? 'bg-emerald-800 text-amber-300 font-bold' : 'hover:text-white'}`}
