@@ -578,22 +578,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   const totalInStockCount = products.reduce((sum, p) => sum + p.stockCount, 0);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-500 selection:text-slate-950">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-white selection:text-black">
       {/* Top Admin Navigation Header */}
-      <header className="bg-slate-900 border-b border-emerald-900/50 sticky top-0 z-40 px-4 py-3">
+      <header className="bg-neutral-900 border-b border-neutral-800 sticky top-0 z-40 px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/20 font-black">
-              <ShieldCheck className="w-6 h-6" />
+            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-black shadow-lg font-black">
+              <ShieldCheck className="w-6 h-6 text-black" />
             </div>
             <div>
               <h1 className="font-black text-lg text-white flex items-center gap-2">
                 <span>{isAr ? 'لوحة التحكم الشاملة لإدارة متجر SOLIMAN - MEGA SYSTEM' : 'SOLIMAN - MEGA SYSTEM Master Admin Dashboard'}</span>
-                <span className="bg-emerald-900 text-amber-300 text-[10px] font-black px-2 py-0.5 rounded-full border border-amber-500/30">
+                <span className="bg-white text-black text-[10px] font-black px-2 py-0.5 rounded-full border border-neutral-300">
                   FULL CONTROL
                 </span>
               </h1>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-neutral-400">
                 {isAr ? 'تحكم كامل بقسم البدل والتثمين، الأجهزة، الأسعار، الطلبات وكروت الصيانة' : 'Full inventory, Trade-In valuations, pricing & orders control'}
               </p>
             </div>
@@ -601,9 +601,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
           <button
             onClick={onBackToStore}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-2"
+            className="bg-white hover:bg-neutral-200 text-black font-extrabold text-xs px-4 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-2"
           >
-            <Store className="w-4 h-4 text-amber-300" />
+            <Store className="w-4 h-4 text-black" />
             <span>{isAr ? 'العودة للمتجر الرئيسي' : 'Back to Main Store'}</span>
           </button>
         </div>
@@ -611,7 +611,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
 
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 border-b border-slate-800 overflow-x-auto pb-3 text-xs sm:text-sm font-bold">
+        <div className="flex items-center gap-2 border-b border-neutral-800 overflow-x-auto pb-3 text-xs sm:text-sm font-bold">
           {[
             { id: 'categories', labelAr: `أقسام الموقع (${storeCategories.length})`, icon: Grid },
             { id: 'trade-in', labelAr: `قسم البدل والتثمين (${tradeInModels.length})`, icon: RefreshCw, badge: newTradeInCount },
@@ -632,14 +632,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 whitespace-nowrap ${
                   isActive 
-                    ? 'bg-amber-500 text-slate-950 font-black shadow-lg shadow-amber-500/20' 
-                    : 'bg-slate-900 text-slate-300 hover:bg-slate-800'
+                    ? 'bg-white text-black font-black shadow-lg' 
+                    : 'bg-neutral-900 text-neutral-300 hover:bg-neutral-800'
                 }`}
               >
                 <Icon className="w-4 h-4" />
                 <span>{tab.labelAr}</span>
                 {tab.badge !== undefined && tab.badge > 0 && (
-                  <span className="bg-rose-500 text-white text-[10px] px-2 py-0.2 rounded-full font-black">
+                  <span className="bg-white text-black text-[10px] px-2 py-0.2 rounded-full font-black border border-neutral-400">
                     {tab.badge}
                   </span>
                 )}

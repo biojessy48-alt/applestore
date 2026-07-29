@@ -136,18 +136,18 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
   };
 
   return (
-    <div id="maintenance-hub" className="py-12 px-4 bg-slate-900 text-slate-100 font-sans border-y border-emerald-900/30">
+    <div id="maintenance-hub" className="py-12 px-4 bg-neutral-950 text-neutral-100 font-sans border-y border-neutral-800">
       <div className="max-w-7xl mx-auto space-y-10">
         {/* Header */}
         <div className="text-center space-y-3 max-w-3xl mx-auto">
-          <span className="inline-flex items-center gap-1.5 text-xs font-black text-amber-300 bg-emerald-900/80 px-4 py-1.5 rounded-full border border-amber-500/30">
-            <Wrench className="w-3.5 h-3.5 text-amber-400" />
+          <span className="inline-flex items-center gap-1.5 text-xs font-black text-black bg-white px-4 py-1.5 rounded-full shadow-md">
+            <Wrench className="w-3.5 h-3.5 text-black" />
             <span>{isAr ? 'مركز الصيانة المعتمد لأجهزة أبل' : 'Certified Apple Service Center'}</span>
           </span>
           <h2 className="text-3xl sm:text-4xl font-black text-white">
             {isAr ? 'صيانة فورية أمامك في 30 دقيقة مع ضمان 6 أشهر' : '30-Minute Express Apple Repair'}
           </h2>
-          <p className="text-slate-300 text-xs sm:text-sm">
+          <p className="text-neutral-400 text-xs sm:text-sm">
             {isAr 
               ? 'نستخدم قطع غيار أصلية 100% مع أحدث أجهزة الليزر وكبس الشاشات بدون رسائل تحذيرية' 
               : 'Original parts, precision laser back glass tool & calibrated battery BMS swap'}
@@ -155,18 +155,18 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
 
           <button
             onClick={onOpenAiAdvisor}
-            className="mt-2 text-xs font-extrabold text-amber-300 hover:text-white bg-emerald-800/60 hover:bg-emerald-700 px-4 py-2 rounded-full border border-amber-400/40 transition-all inline-flex items-center gap-1.5"
+            className="mt-2 text-xs font-extrabold text-white hover:text-black bg-neutral-900 hover:bg-white px-4 py-2 rounded-full border border-neutral-700 transition-all inline-flex items-center gap-1.5"
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <Sparkles className="w-3.5 h-3.5 text-white" />
             <span>{isAr ? 'استشر المساعد الذكي عن عطل جهازك' : 'Diagnose with AI Assistant'}</span>
           </button>
         </div>
 
         {/* Section 1: Ticket Search Bar */}
-        <div className="bg-slate-800/90 p-5 rounded-2xl border border-slate-700 max-w-3xl mx-auto shadow-lg">
-          <h4 className="font-bold text-sm text-slate-200 mb-3 text-right flex items-center justify-between">
+        <div className="bg-neutral-900 p-5 rounded-2xl border border-neutral-800 max-w-3xl mx-auto shadow-lg">
+          <h4 className="font-bold text-sm text-neutral-200 mb-3 text-right flex items-center justify-between">
             <span>{isAr ? 'تتبع حالة كارت الصيانة الخاص بجهازك' : 'Track Repair Ticket Status'}</span>
-            <span className="text-[11px] text-amber-400 font-normal">{isAr ? 'رمز تجريبي: TRK-88214' : 'Try Code: TRK-88214'}</span>
+            <span className="text-[11px] text-neutral-400 font-normal">{isAr ? 'رمز تجريبي: TRK-88214' : 'Try Code: TRK-88214'}</span>
           </h4>
 
           <div className="flex gap-2">
@@ -175,11 +175,11 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
               value={searchTicketCode}
               onChange={(e) => setSearchTicketCode(e.target.value)}
               placeholder={isAr ? 'أدخل إيصال الصيانة (مثال: TRK-88214)' : 'Enter ticket code (e.g. TRK-88214)'}
-              className="flex-1 bg-slate-900 border border-slate-700 focus:border-amber-400 text-white text-sm rounded-xl py-2.5 px-4 focus:outline-none"
+              className="flex-1 bg-black border border-neutral-800 focus:border-white text-white text-sm rounded-xl py-2.5 px-4 focus:outline-none"
             />
             <button
               onClick={handleSearchTicket}
-              className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-6 py-2.5 rounded-xl transition-all flex items-center gap-1.5"
+              className="bg-white hover:bg-neutral-200 text-black font-black text-xs px-6 py-2.5 rounded-xl transition-all flex items-center gap-1.5"
             >
               <Search className="w-4 h-4" />
               <span>{isAr ? 'استعلام' : 'Track'}</span>
@@ -187,7 +187,7 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
           </div>
 
           {ticketSearchError && (
-            <p className="text-xs text-rose-400 font-semibold mt-2 flex items-center gap-1">
+            <p className="text-xs text-neutral-400 font-semibold mt-2 flex items-center gap-1">
               <AlertCircle className="w-3.5 h-3.5" />
               <span>{isAr ? 'رمز الإيصال غير صحيح، جرب استخدام TRK-88214' : 'Ticket code not found, try TRK-88214'}</span>
             </p>
@@ -195,15 +195,15 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
 
           {/* Ticket Live Stepper Display */}
           {activeTicket && (
-            <div className="mt-5 pt-5 border-t border-slate-700/80 space-y-4">
-              <div className="flex justify-between items-start text-xs bg-slate-900/60 p-3 rounded-xl border border-slate-700">
+            <div className="mt-5 pt-5 border-t border-neutral-800 space-y-4">
+              <div className="flex justify-between items-start text-xs bg-black/60 p-3 rounded-xl border border-neutral-800">
                 <div>
-                  <p className="font-extrabold text-amber-300 text-sm">{activeTicket.ticketCode} - {activeTicket.deviceModel}</p>
-                  <p className="text-slate-300 mt-0.5">{activeTicket.issueDescription}</p>
+                  <p className="font-extrabold text-white text-sm">{activeTicket.ticketCode} - {activeTicket.deviceModel}</p>
+                  <p className="text-neutral-400 mt-0.5">{activeTicket.issueDescription}</p>
                 </div>
                 <div className="text-left">
-                  <p className="text-emerald-400 font-extrabold">{formatPrice(activeTicket.estimatedCostEgp)}</p>
-                  <p className="text-slate-400 text-[10px]">{activeTicket.createdAt}</p>
+                  <p className="text-white font-extrabold">{formatPrice(activeTicket.estimatedCostEgp)}</p>
+                  <p className="text-neutral-500 text-[10px]">{activeTicket.createdAt}</p>
                 </div>
               </div>
 
@@ -223,14 +223,14 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
                     <div key={st.step} className="space-y-1">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center mx-auto text-xs font-black ${
                         isCurrent 
-                          ? 'bg-amber-500 text-slate-950 ring-4 ring-amber-500/30' 
+                          ? 'bg-white text-black ring-4 ring-white/20' 
                           : isPassed 
-                            ? 'bg-emerald-600 text-white' 
-                            : 'bg-slate-700 text-slate-400'
+                            ? 'bg-neutral-800 text-white border border-neutral-600' 
+                            : 'bg-neutral-900 text-neutral-600 border border-neutral-800'
                       }`}>
                         {isPassed && !isCurrent ? <Check className="w-4 h-4" /> : idx + 1}
                       </div>
-                      <p className={isCurrent ? 'text-amber-300 font-extrabold' : 'text-slate-400'}>{st.labelAr}</p>
+                      <p className={isCurrent ? 'text-white font-extrabold' : 'text-neutral-500'}>{st.labelAr}</p>
                     </div>
                   );
                 })}
@@ -267,11 +267,11 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
                     }}
                     className={`p-3.5 rounded-2xl border text-center transition-all font-extrabold text-xs flex flex-col items-center gap-2 ${
                       isSelected 
-                        ? 'bg-gradient-to-br from-emerald-600 to-emerald-800 border-amber-400 text-white shadow-lg shadow-emerald-900/50' 
-                        : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                        ? 'bg-white text-black border-white shadow-lg' 
+                        : 'bg-neutral-900 border-neutral-800 text-neutral-300 hover:bg-neutral-800'
                     }`}
                   >
-                    <Icon className={`w-6 h-6 ${isSelected ? 'text-amber-300' : 'text-slate-400'}`} />
+                    <Icon className={`w-6 h-6 ${isSelected ? 'text-black' : 'text-neutral-400'}`} />
                     <span>{d.labelAr}</span>
                   </button>
                 );
@@ -281,10 +281,10 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
             {/* Repair Services List */}
             <div className="space-y-3 pt-2">
               <div className="flex justify-between items-center">
-                <h4 className="font-extrabold text-sm text-slate-200 text-right">
+                <h4 className="font-extrabold text-sm text-neutral-200 text-right">
                   {isAr ? '2. اختر الخدمة أو قطع الغيار المطلوبة:' : '2. Select Service or Repair:'}
                 </h4>
-                <span className="text-[11px] text-amber-400 font-bold bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+                <span className="text-[11px] text-white font-bold bg-neutral-900 px-2.5 py-1 rounded-full border border-neutral-800">
                   {filteredServices.length + 1} خيارات صيانة
                 </span>
               </div>
@@ -298,31 +298,31 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
                     onClick={() => handleSelectService(service)}
                     className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                       isSelected 
-                        ? 'bg-slate-800 border-emerald-500 shadow-md ring-1 ring-emerald-500' 
-                        : 'bg-slate-800/50 border-slate-700 hover:bg-slate-800'
+                        ? 'bg-neutral-900 border-white shadow-md ring-1 ring-white' 
+                        : 'bg-neutral-900/50 border-neutral-800 hover:bg-neutral-900'
                     }`}
                   >
                     <div className="flex justify-between items-start mb-2">
-                      <span className="font-black text-amber-300 text-sm">{service.modelName}</span>
-                      <span className="font-extrabold text-emerald-400 text-base">{formatPrice(service.estimatedPriceEgp)}</span>
+                      <span className="font-black text-white text-sm">{service.modelName}</span>
+                      <span className="font-extrabold text-white text-base">{formatPrice(service.estimatedPriceEgp)}</span>
                     </div>
-                    <p className="font-bold text-xs text-slate-200 mb-2">{service.issueNameAr}</p>
-                    <p className="text-[11px] text-slate-400 leading-relaxed mb-3">{service.descriptionAr}</p>
+                    <p className="font-bold text-xs text-neutral-200 mb-2">{service.issueNameAr}</p>
+                    <p className="text-[11px] text-neutral-400 leading-relaxed mb-3">{service.descriptionAr}</p>
 
-                    <div className="flex items-center justify-between text-[11px] font-semibold text-slate-300 pt-2 border-t border-slate-700/60">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-neutral-300 pt-2 border-t border-neutral-800">
                       <div className="flex items-center gap-4">
-                        <span className="flex items-center gap-1 text-amber-400">
-                          <Clock className="w-3.5 h-3.5" />
+                        <span className="flex items-center gap-1 text-neutral-300">
+                          <Clock className="w-3.5 h-3.5 text-white" />
                           <span>المدة: {service.estimatedTimeMinutes} دقيقة</span>
                         </span>
-                        <span className="flex items-center gap-1 text-emerald-400">
-                          <ShieldCheck className="w-3.5 h-3.5" />
+                        <span className="flex items-center gap-1 text-neutral-300">
+                          <ShieldCheck className="w-3.5 h-3.5 text-white" />
                           <span>الضمان: {service.warrantyMonths} أشهر</span>
                         </span>
                       </div>
 
                       <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black ${
-                        isSelected ? 'bg-amber-500 text-slate-950' : 'bg-slate-700 text-slate-300'
+                        isSelected ? 'bg-white text-black' : 'bg-neutral-800 text-neutral-300'
                       }`}>
                         {isSelected ? 'تم الاختيار ✓' : 'تحديد الخدمة'}
                       </span>
@@ -336,43 +336,43 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
                 onClick={handleSelectCustomService}
                 className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                   isCustomServiceSelected 
-                    ? 'bg-gradient-to-r from-amber-950/90 via-slate-800 to-slate-800 border-amber-400 shadow-lg ring-2 ring-amber-400/60' 
-                    : 'bg-slate-800/40 border-dashed border-amber-500/50 hover:bg-slate-800 hover:border-amber-400'
+                    ? 'bg-neutral-900 border-white shadow-lg ring-1 ring-white' 
+                    : 'bg-neutral-900/40 border-dashed border-neutral-700 hover:bg-neutral-900 hover:border-neutral-500'
                 }`}
               >
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/40">
+                    <div className="p-1.5 rounded-xl bg-neutral-800 text-white border border-neutral-700">
                       <PlusCircle className="w-5 h-5" />
                     </div>
                     <div>
-                      <span className="font-extrabold text-amber-300 text-sm block">
+                      <span className="font-extrabold text-white text-sm block">
                         {isAr ? 'خدمة أخرى / عطل غير مدرج بالجدول' : 'Other Service / Custom Repair'}
                       </span>
-                      <span className="text-[10px] text-slate-400">
+                      <span className="text-[10px] text-neutral-400">
                         {isAr ? 'حدد موديل جهازك ووصف العطل بنفسك' : 'Specify device model and issue yourself'}
                       </span>
                     </div>
                   </div>
-                  <span className="font-extrabold text-[10px] text-emerald-400 bg-emerald-950 px-2.5 py-1 rounded-full border border-emerald-800">
+                  <span className="font-extrabold text-[10px] text-white bg-black px-2.5 py-1 rounded-full border border-neutral-800">
                     {isAr ? 'تحديد السعر بعد التواصل' : 'Quote on call'}
                   </span>
                 </div>
 
-                <p className="text-[11px] text-slate-300 leading-relaxed mb-3">
+                <p className="text-[11px] text-neutral-300 leading-relaxed mb-3">
                   {isAr 
                     ? 'إذا لم تجد عطل جهازك أو الموديل المطلوب بالتحديد في القائمة المتاحة أعلاه، اختر هذا الخيار واكتب التفاصيل في النموذج وسيتواصل معك المهندس فوراً لتحديد التكلفة والموعد.'
                     : 'Can\'t find your service or model in the list? Select this option and write your details below.'}
                 </p>
 
-                <div className="flex items-center justify-between text-[11px] font-semibold text-slate-300 pt-2 border-t border-slate-700/60">
-                  <span className="flex items-center gap-1.5 text-amber-400 font-bold">
+                <div className="flex items-center justify-between text-[11px] font-semibold text-neutral-300 pt-2 border-t border-neutral-800">
+                  <span className="flex items-center gap-1.5 text-white font-bold">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>{isAr ? 'فحص وتحديد التكلفة مجاناً' : 'Free consultation'}</span>
                   </span>
 
                   <span className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition-colors ${
-                    isCustomServiceSelected ? 'bg-amber-500 text-slate-950' : 'bg-amber-500/10 text-amber-300 border border-amber-500/30'
+                    isCustomServiceSelected ? 'bg-white text-black' : 'bg-neutral-800 text-neutral-300 border border-neutral-700'
                   }`}>
                     {isCustomServiceSelected ? 'تم تحديد خدمة أخرى ✓' : 'اختيار خدمة أخرى'}
                   </span>
@@ -382,44 +382,44 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
           </div>
 
           {/* Right Column: Appointment Booking Card */}
-          <div className="lg:col-span-5 bg-slate-800 p-6 rounded-3xl border border-slate-700 shadow-xl space-y-5">
-            <div className="text-right border-b border-slate-700 pb-4">
+          <div className="lg:col-span-5 bg-neutral-900 p-6 rounded-3xl border border-neutral-800 shadow-xl space-y-5">
+            <div className="text-right border-b border-neutral-800 pb-4">
               <h4 className="font-black text-lg text-white">
                 {isAr ? '3. تأكيد الطلب وحجز موعد الصيانة' : '3. Book Repair Appointment'}
               </h4>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-neutral-400 mt-1">
                 {isAr ? 'سيتم التواصل معك فوراً من المهندس الفني لتأكيد التكلفة واستلام الجهاز' : 'Our tech engineer will contact you to confirm final cost'}
               </p>
             </div>
 
             {/* Explicit Cost Determination Notice */}
-            <div className="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-2xl flex items-start gap-3 text-xs text-amber-200">
-              <Info className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+            <div className="bg-neutral-950 border border-neutral-800 p-3.5 rounded-2xl flex items-start gap-3 text-xs text-neutral-300">
+              <Info className="w-5 h-5 text-white shrink-0 mt-0.5" />
               <p className="leading-relaxed">
                 <strong>💡 آلية تحديد التكلفة:</strong> فور إرسال الطلب، يتواصل معك أحد مهندسي الفحص المعتمدين لمراجعة العطل وتأكيد التكلفة النهائية ومدة الصيانة قبل البدء.
               </p>
             </div>
 
             {bookingSuccess ? (
-              <div className="bg-emerald-950/80 border border-emerald-600 p-6 rounded-2xl text-center space-y-4 shadow-2xl">
-                <CheckCircle2 className="w-14 h-14 text-emerald-400 mx-auto animate-bounce" />
+              <div className="bg-black border border-neutral-700 p-6 rounded-2xl text-center space-y-4 shadow-2xl">
+                <CheckCircle2 className="w-14 h-14 text-white mx-auto animate-bounce" />
                 <h5 className="font-black text-white text-lg">
                   {isAr ? 'تم استلام طلب الصيانة بنجاح!' : 'Repair Order Received!'}
                 </h5>
-                <p className="text-xs text-slate-200">
+                <p className="text-xs text-neutral-300">
                   {isAr ? 'كود التذكرة الرقمية الخاص بك:' : 'Your digital ticket code:'}
                 </p>
-                <div className="bg-slate-900 py-3 px-4 rounded-xl font-mono font-black text-amber-300 text-2xl tracking-widest border border-amber-500/40 shadow-inner">
+                <div className="bg-neutral-900 py-3 px-4 rounded-xl font-mono font-black text-white text-2xl tracking-widest border border-neutral-700 shadow-inner">
                   {generatedTicket}
                 </div>
 
-                <div className="bg-slate-900/90 p-3.5 rounded-xl text-right text-xs text-slate-300 space-y-1.5 border border-slate-800">
+                <div className="bg-neutral-900 p-3.5 rounded-xl text-right text-xs text-neutral-300 space-y-1.5 border border-neutral-800">
                   <p><strong>الموديل:</strong> {customDeviceModel || selectedService?.modelName}</p>
                   <p><strong>العطل المطلوب:</strong> {customIssueDesc || selectedService?.issueNameAr}</p>
-                  <p className="text-emerald-400 font-bold"><strong>الحالة:</strong> بانتظار تواصل المهندس لتأكيد الموعد والتكلفة</p>
+                  <p className="text-white font-bold"><strong>الحالة:</strong> بانتظار تواصل المهندس لتأكيد الموعد والتكلفة</p>
                 </div>
 
-                <p className="text-xs text-slate-300 leading-relaxed">
+                <p className="text-xs text-neutral-400 leading-relaxed">
                   {isAr ? 'سيتصل بك مهندس الصيانة المعتمد خلال دقائق للتنسيق واستلام الجهاز أو إرسال مندوب الشحن.' : 'Our repair technician will contact you within a few minutes.'}
                 </p>
 
@@ -433,9 +433,9 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg"
+                  className="w-full bg-white text-black font-extrabold text-xs py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:bg-neutral-200"
                 >
-                  <MessageSquare className="w-4 h-4" />
+                  <MessageSquare className="w-4 h-4 text-black" />
                   <span>تواصل مع المهندس فوراً عبر الواتساب</span>
                 </a>
 
@@ -445,7 +445,7 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
                     setBookingName('');
                     setBookingPhone('');
                   }}
-                  className="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-5 py-2 rounded-xl border border-slate-700"
+                  className="bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-bold px-5 py-2 rounded-xl border border-neutral-700"
                 >
                   {isAr ? 'حجز طلب صيانة آخر' : 'Submit Another Ticket'}
                 </button>
@@ -454,58 +454,58 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
               <form onSubmit={handleBookRepair} className="space-y-4">
                 {/* Selected Service Card or Custom Service Banner */}
                 {isCustomServiceSelected ? (
-                  <div className="bg-gradient-to-r from-amber-950/80 via-slate-900 to-slate-900 p-4 rounded-2xl border border-amber-500/50 text-xs space-y-1.5 shadow-lg">
+                  <div className="bg-black p-4 rounded-2xl border border-neutral-700 text-xs space-y-1.5 shadow-lg">
                     <div className="flex justify-between items-center">
-                      <span className="text-amber-300 font-black flex items-center gap-1.5 text-xs">
-                        <PlusCircle className="w-4 h-4 text-amber-400" />
+                      <span className="text-white font-black flex items-center gap-1.5 text-xs">
+                        <PlusCircle className="w-4 h-4 text-white" />
                         <span>{isAr ? 'طلب خدمة صيانة مخصصة (خدمة أخرى)' : 'Custom Repair Order'}</span>
                       </span>
-                      <span className="text-emerald-400 font-bold bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-800 text-[10px]">
+                      <span className="text-white font-bold bg-neutral-900 px-2.5 py-0.5 rounded-full border border-neutral-800 text-[10px]">
                         {isAr ? 'تحديد التكلفة مجاناً' : 'Free Consultation'}
                       </span>
                     </div>
-                    <p className="text-slate-300 text-[11px] leading-relaxed">
+                    <p className="text-neutral-400 text-[11px] leading-relaxed">
                       {isAr 
                         ? 'يرجى توضيح موديل جهازك ووصف العطل بالتفصيل بالأسفل ليتم التواصل معك فوراً وتحديد التكلفة بدقة.'
                         : 'Please specify your device model and problem description below.'}
                     </p>
                   </div>
                 ) : selectedService ? (
-                  <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-700 text-xs space-y-1">
+                  <div className="bg-black p-3.5 rounded-xl border border-neutral-800 text-xs space-y-1">
                     <div className="flex justify-between items-center">
-                      <span className="text-amber-400 font-bold">{selectedService.modelName}</span>
-                      <span className="text-emerald-400 font-black">{formatPrice(selectedService.estimatedPriceEgp)}</span>
+                      <span className="text-white font-bold">{selectedService.modelName}</span>
+                      <span className="text-white font-black">{formatPrice(selectedService.estimatedPriceEgp)}</span>
                     </div>
-                    <p className="text-slate-200 font-semibold">{selectedService.issueNameAr}</p>
+                    <p className="text-neutral-300 font-semibold">{selectedService.issueNameAr}</p>
                   </div>
                 ) : null}
 
                 <div>
-                  <label className="text-xs font-bold text-slate-300 block mb-1 text-right">{isAr ? 'الاسم بالكامل: *' : 'Full Name: *'}</label>
+                  <label className="text-xs font-bold text-neutral-300 block mb-1 text-right">{isAr ? 'الاسم بالكامل: *' : 'Full Name: *'}</label>
                   <input
                     type="text"
                     required
                     value={bookingName}
                     onChange={(e) => setBookingName(e.target.value)}
                     placeholder={isAr ? 'مثال: أحمد محمود' : 'Full Name'}
-                    className="w-full bg-slate-900 border border-slate-700 focus:border-emerald-500 text-white text-xs rounded-xl p-3 focus:outline-none"
+                    className="w-full bg-black border border-neutral-800 focus:border-white text-white text-xs rounded-xl p-3 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-300 block mb-1 text-right">{isAr ? 'رقم الهاتف / الواتساب: *' : 'Phone Number: *'}</label>
+                  <label className="text-xs font-bold text-neutral-300 block mb-1 text-right">{isAr ? 'رقم الهاتف / الواتساب: *' : 'Phone Number: *'}</label>
                   <input
                     type="tel"
                     required
                     value={bookingPhone}
                     onChange={(e) => setBookingPhone(e.target.value)}
                     placeholder="010XXXXXXXX"
-                    className="w-full bg-slate-900 border border-slate-700 focus:border-emerald-500 text-white text-xs rounded-xl p-3 focus:outline-none"
+                    className="w-full bg-black border border-neutral-800 focus:border-white text-white text-xs rounded-xl p-3 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-300 block mb-1 text-right">
+                  <label className="text-xs font-bold text-neutral-300 block mb-1 text-right">
                     {isCustomServiceSelected 
                       ? (isAr ? 'موديل الجهاز بالتحديد: *' : 'Specific Device Model: *') 
                       : (isAr ? 'موديل الجهاز (تأكيد أو تعديل):' : 'Device Model:')}
@@ -516,12 +516,12 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
                     value={customDeviceModel}
                     onChange={(e) => setCustomDeviceModel(e.target.value)}
                     placeholder={isAr ? 'مثال: iPhone 14 Pro Max / MacBook Air M2' : 'e.g. iPhone 14 Pro Max'}
-                    className="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 text-amber-300 font-bold text-xs rounded-xl p-3 focus:outline-none"
+                    className="w-full bg-black border border-neutral-800 focus:border-white text-white font-bold text-xs rounded-xl p-3 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-300 block mb-1 text-right">
+                  <label className="text-xs font-bold text-neutral-300 block mb-1 text-right">
                     {isCustomServiceSelected 
                       ? (isAr ? 'وصف العطل أو الخدمة المطلوبة بنفسك: *' : 'Describe your custom repair request: *')
                       : (isAr ? 'تحديد الخدمة / وصف المشكلة والعطل:' : 'Service / Problem Description:')}
@@ -536,16 +536,16 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
                         ? (isAr ? 'مثال: الجهاز صدم في الماء، أو السماعة لا تعمل، أو تغيير سوكيت الشحن، أو معايرة الكاميرا...' : 'Describe problem in detail...')
                         : (isAr ? 'مثال: الشاشة مكسورة وتحتاج تغيير أصلية، البطارية ضعيفة 75%...' : 'Issue description...')
                     }
-                    className="w-full bg-slate-900 border border-slate-700 focus:border-amber-400 text-white text-xs rounded-xl p-3 focus:outline-none"
+                    className="w-full bg-black border border-neutral-800 focus:border-white text-white text-xs rounded-xl p-3 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-300 block mb-1 text-right">{isAr ? 'الفرع الفني أو خيار الاستلام:' : 'Preferred Branch / Delivery:'}</label>
+                  <label className="text-xs font-bold text-neutral-300 block mb-1 text-right">{isAr ? 'الفرع الفني أو خيار الاستلام:' : 'Preferred Branch / Delivery:'}</label>
                   <select
                     value={bookingBranch}
                     onChange={(e) => setBookingBranch(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-700 focus:border-emerald-500 text-white text-xs rounded-xl p-3 focus:outline-none font-semibold"
+                    className="w-full bg-black border border-neutral-800 focus:border-white text-white text-xs rounded-xl p-3 focus:outline-none font-semibold"
                   >
                     {(branches && branches.length > 0 ? branches : mockStoreBranches).map((b) => (
                       <option key={b.id} value={b.id}>
@@ -558,9 +558,9 @@ export const MaintenanceCenter: React.FC<MaintenanceCenterProps> = ({
 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-extrabold text-xs py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
+                  className="w-full bg-white hover:bg-neutral-200 text-black font-black text-xs py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
                 >
-                  <Send className="w-4 h-4 text-amber-300" />
+                  <Send className="w-4 h-4 text-black" />
                   <span>{isAr ? 'إرسال طلب الصيانة وتأكيد التواصل' : 'Confirm Express Repair Booking'}</span>
                 </button>
               </form>

@@ -170,17 +170,17 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
     : defaultCategoryItems;
 
   return (
-    <section className="py-10 px-4 bg-slate-50 font-sans border-b border-slate-200">
+    <section className="py-10 px-4 bg-neutral-950 font-sans border-b border-neutral-800 text-white">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div className="text-right rtl:text-right">
-            <span className="text-xs font-black tracking-wider uppercase text-emerald-700 bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-300/50">
-              {isAr ? 'تصنيفات متجر آي تك' : 'Category Explorer'}
+            <span className="text-xs font-black tracking-wider uppercase text-black bg-white px-3.5 py-1 rounded-full border border-neutral-200">
+              {isAr ? 'تصنيفات متجر سليمان' : 'Category Explorer'}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">
+            <h2 className="text-2xl sm:text-3xl font-black text-white mt-2">
               {isAr ? 'استكشف أقسام الأجهزة والخدمات' : 'Explore Device Categories'}
             </h2>
-            <p className="text-slate-600 text-xs sm:text-sm mt-1">
+            <p className="text-neutral-400 text-xs sm:text-sm mt-1">
               {isAr 
                 ? 'جميع منتجات أبل الأصلية والأجهزة المستعملة بحالة الزيرو مع مركز صيانة متطور' 
                 : 'Genuine Apple products, certified pre-owned devices & repair center'}
@@ -189,7 +189,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
 
           <button
             onClick={() => onSelectCategory('all')}
-            className="text-xs font-bold text-emerald-800 hover:text-emerald-950 flex items-center gap-1.5 self-start md:self-auto bg-white px-4 py-2.5 rounded-full border border-slate-200 shadow-sm hover:shadow transition-all"
+            className="text-xs font-bold text-white hover:text-neutral-300 flex items-center gap-1.5 self-start md:self-auto bg-neutral-900 px-4 py-2.5 rounded-full border border-neutral-700 shadow-sm hover:border-white transition-all"
           >
             <span>{isAr ? 'عرض كافة المنتجات' : 'View All Products'}</span>
             <ChevronLeft className="w-4 h-4 rtl:rotate-0 rotate-180" />
@@ -206,10 +206,10 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
               <div
                 key={cat.id}
                 onClick={() => onSelectCategory(cat.id)}
-                className={`relative overflow-hidden rounded-2xl p-4 sm:p-5 cursor-pointer transition-all duration-300 group shadow-sm hover:shadow-xl border ${
+                className={`relative overflow-hidden rounded-2xl p-4 sm:p-5 cursor-pointer transition-all duration-300 group shadow-sm border ${
                   isSelected 
-                    ? 'ring-2 ring-emerald-600 border-emerald-600 scale-[1.02]' 
-                    : 'border-slate-200 hover:border-emerald-500/50 bg-white'
+                    ? 'ring-2 ring-white border-white scale-[1.02] bg-neutral-900' 
+                    : 'border-neutral-800 hover:border-neutral-500 bg-neutral-900/90'
                 }`}
               >
                 {/* Background Subtle Image */}
@@ -219,27 +219,27 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
 
                 <div className="relative z-10 flex flex-col h-full justify-between space-y-3">
                   <div className="flex items-start justify-between">
-                    <div className={`p-3 rounded-xl bg-gradient-to-br ${cat.gradient} text-white shadow-md group-hover:scale-110 transition-transform`}>
-                      <Icon className="w-5 h-5 text-amber-300" />
+                    <div className="p-3 rounded-xl bg-white text-black font-black shadow-md group-hover:scale-110 transition-transform border border-neutral-200">
+                      <Icon className="w-5 h-5 text-black" />
                     </div>
 
-                    <span className="text-[10px] font-bold text-emerald-900 bg-amber-100/90 border border-amber-300/60 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-black text-black bg-white border border-neutral-200 px-2 py-0.5 rounded-full">
                       {isAr ? cat.badgeAr : cat.badgeEn}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="font-extrabold text-slate-900 text-sm sm:text-base group-hover:text-emerald-700 transition-colors">
+                    <h3 className="font-extrabold text-white text-sm sm:text-base group-hover:text-neutral-300 transition-colors">
                       {isAr ? cat.nameAr : cat.nameEn}
                     </h3>
-                    <p className="text-slate-500 text-xs mt-0.5 line-clamp-1">
+                    <p className="text-neutral-400 text-xs mt-0.5 line-clamp-1">
                       {isAr ? cat.descAr : cat.descEn}
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-400 group-hover:text-emerald-800 transition-colors">
+                  <div className="pt-2 border-t border-neutral-800 flex items-center justify-between text-[11px] font-bold text-neutral-400 group-hover:text-white transition-colors">
                     <span>{isAr ? cat.countAr : cat.countEn}</span>
-                    <ArrowUpLeft className="w-3.5 h-3.5 text-emerald-600 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
+                    <ArrowUpLeft className="w-3.5 h-3.5 text-white group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
                   </div>
                 </div>
               </div>

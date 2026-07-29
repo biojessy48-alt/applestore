@@ -146,24 +146,109 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Editable Catalog State
-  const [products, setProducts] = useState<Product[]>(mockProducts);
-  const [repairServices, setRepairServices] = useState<RepairService[]>(mockRepairServices);
-  const [repairTickets, setRepairTickets] = useState<RepairTicket[]>(initialTickets);
-  const [orders, setOrders] = useState<OrderItem[]>(initialOrders);
+  // Persistent State Engine using LocalStorage
+  const [products, setProducts] = useState<Product[]>(() => {
+    try {
+      const saved = localStorage.getItem('soliman_products');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return mockProducts;
+  });
+
+  const [repairServices, setRepairServices] = useState<RepairService[]>(() => {
+    try {
+      const saved = localStorage.getItem('soliman_repair_services');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return mockRepairServices;
+  });
+
+  const [repairTickets, setRepairTickets] = useState<RepairTicket[]>(() => {
+    try {
+      const saved = localStorage.getItem('soliman_repair_tickets');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return initialTickets;
+  });
+
+  const [orders, setOrders] = useState<OrderItem[]>(() => {
+    try {
+      const saved = localStorage.getItem('soliman_orders');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return initialOrders;
+  });
   
   // Trade-In Section State
-  const [tradeInModels, setTradeInModels] = useState<TradeInModel[]>(initialTradeInModels);
-  const [tradeInRequests, setTradeInRequests] = useState<TradeInRequest[]>(initialTradeInRequests);
+  const [tradeInModels, setTradeInModels] = useState<TradeInModel[]>(() => {
+    try {
+      const saved = localStorage.getItem('soliman_trade_in_models');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return initialTradeInModels;
+  });
+
+  const [tradeInRequests, setTradeInRequests] = useState<TradeInRequest[]>(() => {
+    try {
+      const saved = localStorage.getItem('soliman_trade_in_requests');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return initialTradeInRequests;
+  });
 
   // Hero Banner Slides State
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
 
   // Store Branches State
-  const [storeBranches, setStoreBranches] = useState<StoreBranch[]>(mockStoreBranches);
+  const [storeBranches, setStoreBranches] = useState<StoreBranch[]>(() => {
+    try {
+      const saved = localStorage.getItem('soliman_branches');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return mockStoreBranches;
+  });
 
   // Store Categories State
-  const [storeCategories, setStoreCategories] = useState<StoreCategory[]>(mockStoreCategories);
+  const [storeCategories, setStoreCategories] = useState<StoreCategory[]>(() => {
+    try {
+      const saved = localStorage.getItem('soliman_categories');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return mockStoreCategories;
+  });
+
+  // Sync to localStorage
+  useEffect(() => {
+    try { localStorage.setItem('soliman_products', JSON.stringify(products)); } catch (e) {}
+  }, [products]);
+
+  useEffect(() => {
+    try { localStorage.setItem('soliman_repair_services', JSON.stringify(repairServices)); } catch (e) {}
+  }, [repairServices]);
+
+  useEffect(() => {
+    try { localStorage.setItem('soliman_repair_tickets', JSON.stringify(repairTickets)); } catch (e) {}
+  }, [repairTickets]);
+
+  useEffect(() => {
+    try { localStorage.setItem('soliman_orders', JSON.stringify(orders)); } catch (e) {}
+  }, [orders]);
+
+  useEffect(() => {
+    try { localStorage.setItem('soliman_trade_in_models', JSON.stringify(tradeInModels)); } catch (e) {}
+  }, [tradeInModels]);
+
+  useEffect(() => {
+    try { localStorage.setItem('soliman_trade_in_requests', JSON.stringify(tradeInRequests)); } catch (e) {}
+  }, [tradeInRequests]);
+
+  useEffect(() => {
+    try { localStorage.setItem('soliman_branches', JSON.stringify(storeBranches)); } catch (e) {}
+  }, [storeBranches]);
+
+  useEffect(() => {
+    try { localStorage.setItem('soliman_categories', JSON.stringify(storeCategories)); } catch (e) {}
+  }, [storeCategories]);
 
   const handleAddStoreCategory = (newCat: StoreCategory) => {
     setStoreCategories((prev) => [newCat, ...prev]);

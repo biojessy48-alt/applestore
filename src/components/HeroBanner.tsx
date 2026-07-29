@@ -82,18 +82,18 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   const slide = slides[currentSlide];
 
   return (
-    <div className="relative bg-slate-950 text-white overflow-hidden font-sans border-b border-emerald-900/20">
-      {/* Subtle Background Glow */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="relative bg-neutral-950 text-white overflow-hidden font-sans border-b border-neutral-800">
+      {/* Subtle Background Radial Gradients */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-neutral-800/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-neutral-900/20 rounded-full blur-3xl pointer-events-none" />
 
       {/* Main Hero Slider */}
       <div className="max-w-7xl mx-auto px-4 py-8 md:py-16 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[380px]">
           {/* Text Content */}
           <div className="lg:col-span-7 space-y-5 text-right rtl:text-right">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500/20 to-emerald-500/20 border border-amber-500/40 px-3.5 py-1.5 rounded-full text-amber-300 text-xs font-bold tracking-wide">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+            <div className="inline-flex items-center gap-2 bg-white text-black border border-neutral-200 px-3.5 py-1.5 rounded-full text-xs font-black tracking-wide shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-black animate-spin" />
               <span>{isAr ? slide.badgeAr : slide.badgeEn}</span>
             </div>
 
@@ -101,7 +101,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
               {isAr ? slide.titleAr : slide.titleEn}
             </h1>
 
-            <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl font-normal">
+            <p className="text-neutral-300 text-sm sm:text-base leading-relaxed max-w-2xl font-normal">
               {isAr ? slide.subtitleAr : slide.subtitleEn}
             </p>
 
@@ -114,7 +114,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
                     onSelectCategory(slide.category || 'all');
                   }
                 }}
-                className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-extrabold text-sm px-7 py-3.5 rounded-full shadow-lg shadow-emerald-900/40 hover:scale-105 transition-all flex items-center gap-2"
+                className="bg-white hover:bg-neutral-200 text-black font-black text-sm px-7 py-3.5 rounded-full shadow-lg hover:scale-105 transition-all flex items-center gap-2 border border-neutral-300"
               >
                 <span>{isAr ? slide.ctaAr : slide.ctaEn}</span>
                 <ChevronLeft className="w-4 h-4 rtl:rotate-0 rotate-180" />
@@ -122,9 +122,9 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
 
               <button
                 onClick={onOpenTradeIn}
-                className="bg-slate-900 hover:bg-slate-800 text-amber-300 font-bold text-sm px-6 py-3.5 rounded-full border border-amber-500/30 hover:border-amber-400 transition-all flex items-center gap-2"
+                className="bg-neutral-900 hover:bg-neutral-800 text-white font-bold text-sm px-6 py-3.5 rounded-full border border-neutral-700 hover:border-white transition-all flex items-center gap-2"
               >
-                <RefreshCw className="w-4 h-4 text-amber-400" />
+                <RefreshCw className="w-4 h-4 text-neutral-300" />
                 <span>{isAr ? 'حاسبة بدل جهازك القديم' : 'Trade-In Calculator'}</span>
               </button>
             </div>
@@ -132,22 +132,22 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
 
           {/* Banner Hero Image */}
           <div className="lg:col-span-5 relative flex justify-center">
-            <div className="relative w-full max-w-md aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border border-emerald-500/20 group">
+            <div className="relative w-full max-w-md aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border border-neutral-800 group bg-black">
               <img
                 src={slide.image}
                 alt={isAr ? slide.titleAr : slide.titleEn}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-80" />
               
               {/* Overlay Badge */}
-              <div className="absolute bottom-4 left-4 right-4 bg-slate-900/90 backdrop-blur-md p-3 rounded-xl border border-emerald-500/30 flex items-center justify-between text-xs text-white">
+              <div className="absolute bottom-4 left-4 right-4 bg-neutral-900/90 backdrop-blur-md p-3 rounded-xl border border-neutral-700 flex items-center justify-between text-xs text-white">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-amber-400" />
-                  <span className="font-bold">{isAr ? 'ضمان آي تك الحقيقي' : 'iTech Warranty'}</span>
+                  <ShieldCheck className="w-4 h-4 text-white" />
+                  <span className="font-bold">{isAr ? 'ضمان سليمان المعتمد' : 'Soliman Warranty'}</span>
                 </div>
-                <span className="text-emerald-400 font-semibold">{isAr ? 'قطع أصلية 100%' : '100% Genuine'}</span>
+                <span className="text-neutral-300 font-semibold">{isAr ? 'قطع أصلية 100%' : '100% Genuine'}</span>
               </div>
             </div>
           </div>
@@ -160,7 +160,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
               key={idx}
               onClick={() => setCurrentSlide(idx)}
               className={`h-2 rounded-full transition-all ${
-                currentSlide === idx ? 'w-8 bg-amber-400' : 'w-2 bg-slate-700 hover:bg-slate-500'
+                currentSlide === idx ? 'w-8 bg-white' : 'w-2 bg-neutral-800 hover:bg-neutral-600'
               }`}
             />
           ))}
@@ -168,37 +168,37 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
       </div>
 
       {/* Trust Badges Strip */}
-      <div className="bg-emerald-950/80 border-t border-emerald-900/50 py-4 px-4 text-slate-200">
+      <div className="bg-black border-t border-neutral-800 py-4 px-4 text-neutral-200">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div className="flex items-center justify-center gap-2.5 p-2 bg-slate-900/40 rounded-xl border border-emerald-800/20">
-            <ShieldCheck className="w-5 h-5 text-amber-400 shrink-0" />
+          <div className="flex items-center justify-center gap-2.5 p-2 bg-neutral-900 rounded-xl border border-neutral-800">
+            <ShieldCheck className="w-5 h-5 text-white shrink-0" />
             <div className="text-right rtl:text-right">
               <p className="font-bold text-xs text-white">{isAr ? 'ضمان أبل وحماية معتمدة' : 'Official Warranty'}</p>
-              <p className="text-[11px] text-slate-400">{isAr ? 'ضمان شامل حتى سنة كاملة' : 'Up to 1 year full guarantee'}</p>
+              <p className="text-[11px] text-neutral-400">{isAr ? 'ضمان شامل حتى سنة كاملة' : 'Up to 1 year full guarantee'}</p>
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-2.5 p-2 bg-slate-900/40 rounded-xl border border-emerald-800/20">
-            <Wrench className="w-5 h-5 text-emerald-400 shrink-0" />
+          <div className="flex items-center justify-center gap-2.5 p-2 bg-neutral-900 rounded-xl border border-neutral-800">
+            <Wrench className="w-5 h-5 text-white shrink-0" />
             <div className="text-right rtl:text-right">
               <p className="font-bold text-xs text-white">{isAr ? 'صيانة فورية في 30 دقيقة' : '30-Min Express Repair'}</p>
-              <p className="text-[11px] text-slate-400">{isAr ? 'أمام عينيك بقطع أصلية' : 'Genuine parts on the spot'}</p>
+              <p className="text-[11px] text-neutral-400">{isAr ? 'أمام عينيك بقطع أصلية' : 'Genuine parts on the spot'}</p>
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-2.5 p-2 bg-slate-900/40 rounded-xl border border-emerald-800/20">
-            <RefreshCw className="w-5 h-5 text-amber-400 shrink-0" />
+          <div className="flex items-center justify-center gap-2.5 p-2 bg-neutral-900 rounded-xl border border-neutral-800">
+            <RefreshCw className="w-5 h-5 text-white shrink-0" />
             <div className="text-right rtl:text-right">
               <p className="font-bold text-xs text-white">{isAr ? 'استبدال أعلى تقييم سوقي' : 'Best Trade-In Value'}</p>
-              <p className="text-[11px] text-slate-400">{isAr ? 'تثمين فوري لجهازك القديم' : 'Instant evaluation & upgrade'}</p>
+              <p className="text-[11px] text-neutral-400">{isAr ? 'تثمين فوري لجهازك القديم' : 'Instant evaluation & upgrade'}</p>
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-2.5 p-2 bg-slate-900/40 rounded-xl border border-emerald-800/20">
-            <CreditCard className="w-5 h-5 text-emerald-400 shrink-0" />
+          <div className="flex items-center justify-center gap-2.5 p-2 bg-neutral-900 rounded-xl border border-neutral-800">
+            <CreditCard className="w-5 h-5 text-white shrink-0" />
             <div className="text-right rtl:text-right">
               <p className="font-bold text-xs text-white">{isAr ? 'تقسيط حتى 36 شهر' : '0% Interest Installments'}</p>
-              <p className="text-[11px] text-slate-400">{isAr ? 'ValU، سهولة، وبنوك مصر' : 'ValU, Souhoola & Cards'}</p>
+              <p className="text-[11px] text-neutral-400">{isAr ? 'ValU، سهولة، وبنوك مصر' : 'ValU, Souhoola & Cards'}</p>
             </div>
           </div>
         </div>
